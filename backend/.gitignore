@@ -1,6 +1,5 @@
 node_modules
 .env
-/.vscode
 
 # Hardhat files
 /cache
@@ -13,3 +12,7 @@ node_modules
 # solidity-coverage files
 /coverage
 /coverage.json
+
+.vscode
+#Mac files
+.DS_Store
