@@ -3,37 +3,35 @@
 pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/utils/math/Math.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 
 /* ========== EVENTS ========== */
 
-event RewardAdded(uint256 reward);
+event YeldAdded(uint256 reward);
 event Staked(address indexed user, uint256 amount);
 event Withdrawn(address indexed user, uint256 amount);
-event RewardPaid(address indexed user, uint256 reward);
-event RewardsDurationUpdated(uint256 newDuration);
+event YeldPaid(address indexed user, uint256 reward);
+event YeldDurationUpdated(uint256 newDuration);
 event Recovered(address token, uint256 amount);
 
-// https://docs.synthetix.io/contracts/source/contracts/stakingrewards
 contract Staking is ReentrancyGuard, Ownable {
-    using Math for uint256;
+
     using SafeERC20 for IERC20;
 
     /* ========== STATE VARIABLES ========== */
 
-    IERC20 public rewardsToken;
-    IERC20 public stakingToken;
+    IERC20 public inToken;
+    IERC20 public outToken;
     uint256 public periodFinish;
-    uint256 public rewardRate=3;
-    uint256 public rewardsDuration = 7 days;
+    uint256 public yeldRate;
+    uint256 public yeldDuration = 7 days;
     uint256 public lastUpdateTime;
-    uint256 public rewardPerTokenStored;
+    uint256 public yeldsPerTokenStored;
 
-    mapping(address => uint256) public userRewardPerTokenPaid;
-    mapping(address => uint256) public rewards;
+    mapping(address => uint256) public userYeldsPerTokenPaid;
+    mapping(address => uint256) public yelds;
 
     uint256 private _totalSupply;
     mapping(address => uint256) private _balances;
@@ -42,11 +40,11 @@ contract Staking is ReentrancyGuard, Ownable {
 
     constructor(
         address _owner,
-        address _rewardsToken,
-        address _stakingToken
-    ) public Ownable(_owner) {
-        rewardsToken = IERC20(_rewardsToken);
-        stakingToken = IERC20(_stakingToken);
+        address _inToken,
+        address _outToken
+    ) Ownable(_owner) {
+        inToken = IERC20(_inToken);
+        outToken = IERC20(_outToken);
     }
 
     /* ========== VIEWS ========== */
@@ -59,101 +57,100 @@ contract Staking is ReentrancyGuard, Ownable {
         return _balances[account];
     }
 
-    function lastTimeRewardApplicable() public view returns (uint256) {
+    function lastTimeYeldApplicable() public view returns (uint256) {
         return block.timestamp < periodFinish ? block.timestamp : periodFinish;
     }
 
-    function rewardPerToken() public view returns (uint256) {
+    function yeldPerToken() public view returns (uint256) {
         if (_totalSupply == 0) {
-            return rewardPerTokenStored;
+            return yeldsPerTokenStored;
         }
-        uint256 lastTimeRewardApplicableValue = lastTimeRewardApplicable();
-        uint256 periodApplicable = lastTimeRewardApplicableValue - lastUpdateTime;
-        return periodApplicable*rewardRate*1e18/_totalSupply;
+        uint256 periodApplicable = lastTimeYeldApplicable() - lastUpdateTime;
+        return periodApplicable*yeldRate*1e18/_totalSupply;
     }
 
     function earned(address account) public view returns (uint256) {
-       // return _balances[account].mul(rewardPerToken().sub(userRewardPerTokenPaid[account])).div(1e18).add(rewards[account]);
+        return _balances[account]*(yeldPerToken()-userYeldsPerTokenPaid[account])/1e18 + yelds[account];
     }
 
-    function getRewardForDuration() external view returns (uint256) {
-        return rewardRate*rewardsDuration;
+    function getYeldForDuration() external view returns (uint256) {
+        return yeldRate*yeldDuration;
+    }
+
+    /* ========== MODIFIERS ========== */
+
+    modifier updateYeld(address account) {
+        yeldsPerTokenStored = yeldPerToken();
+        lastUpdateTime = lastTimeYeldApplicable();
+        if (account != address(0)) {
+            yelds[account] = earned(account);
+            userYeldsPerTokenPaid[account] = yeldsPerTokenStored;
+        }
+        _;
     }
 
     /* ========== MUTATIVE FUNCTIONS ========== */
 
-    function stake(uint256 amount) external nonReentrant updateReward(msg.sender) {
-        require(amount > 0, "Amount to ba staked must be > 0");
+    function stake(uint256 amount) external nonReentrant updateYeld(msg.sender) {
+        require(amount > 0, "Amount to be staked must be > 0");
         _totalSupply = _totalSupply + amount;
         _balances[msg.sender] = _balances[msg.sender] + amount;
-        stakingToken.safeTransferFrom(msg.sender, address(this), amount);
+        outToken.safeTransferFrom(msg.sender, address(this), amount);
         emit Staked(msg.sender, amount);
     }
 
-    function withdraw(uint256 amount) public nonReentrant updateReward(msg.sender) {
+    function withdraw(uint256 amount) public nonReentrant updateYeld(msg.sender) {
         require(amount > 0, "Cannot withdraw 0");
         _totalSupply = _totalSupply - amount;
         _balances[msg.sender] = _balances[msg.sender] - amount ;
-        stakingToken.safeTransfer(msg.sender, amount);
+        outToken.safeTransfer(msg.sender, amount);
         emit Withdrawn(msg.sender, amount);
     }
 
-    function getReward() public nonReentrant updateReward(msg.sender) {
-        uint256 reward = rewards[msg.sender];
-        if (reward > 0) {
-            rewards[msg.sender] = 0;
-            rewardsToken.safeTransfer(msg.sender, reward);
-            emit RewardPaid(msg.sender, reward);
+    function getYeld() public nonReentrant updateYeld(msg.sender) {
+        uint256 yeld = yelds[msg.sender];
+        if (yeld > 0) {
+            yelds[msg.sender] = 0;
+            inToken.safeTransfer(msg.sender, yeld);
+            emit YeldPaid(msg.sender, yeld);
         }
     }
 
     function exit() external {
         withdraw(_balances[msg.sender]);
-        getReward();
+        getYeld();
     }
 
     /* ========== RESTRICTED FUNCTIONS ========== */
 
-    function notifyRewardAmount(uint256 reward) external updateReward(address(0)) {
+    function notifyYeldAmount(uint256 _yeld) external updateYeld(address(0)) {
         if (block.timestamp >= periodFinish) {
-            rewardRate = reward / rewardsDuration;
+            yeldRate = _yeld / yeldDuration;
         } else {
             uint256 remaining = periodFinish - block.timestamp;
-            uint256 leftover = remaining * rewardRate;
-            rewardRate = reward + leftover/rewardsDuration;
+            uint256 leftover = remaining * yeldRate;
+            yeldRate = _yeld + leftover/yeldDuration;
         }
 
-        // Ensure the provided reward amount is not more than the balance in the contract.
-        // This keeps the reward rate in the right range, preventing overflows due to
-        // very high values of rewardRate in the earned and rewardsPerToken functions;
-        // Reward + leftover must be less than 2^256 / 10^18 to avoid overflow.
-        uint balance = rewardsToken.balanceOf(address(this));
-        require(rewardRate <= balance / rewardsDuration, "Provided reward too high");
+        // Ensure the provided yeld amount is not more than the balance in the contract.
+        // This keeps the yeld rate in the right range, preventing overflows due to
+        // very high values of yeldRate in the earned and yeldPerToken functions;
+        // Yeld + leftover must be less than 2^256 / 10^18 to avoid overflow.
+        uint balance = inToken.balanceOf(address(this));
+        require(yeldRate <= balance / yeldDuration, "Provided amount too high");
 
         lastUpdateTime = block.timestamp;
-        periodFinish = block.timestamp + rewardsDuration;
-        emit RewardAdded(reward);
+        periodFinish = block.timestamp + yeldDuration;
+        emit YeldAdded(_yeld);
     }
 
-    function setRewardsDuration(uint256 _rewardsDuration) external onlyOwner {
+
+    function setYeldDuration(uint256 _yeldDuration) external onlyOwner {
         require(
             block.timestamp > periodFinish,
-            "Previous rewards period must be complete before changing the duration for the new period"
+            "Previous yeld period must be complete before changing the duration for the new period"
         );
-        rewardsDuration = _rewardsDuration;
-        emit RewardsDurationUpdated(rewardsDuration);
+        yeldDuration = _yeldDuration;
+        emit YeldDurationUpdated(yeldDuration);
     }
-
-    /* ========== MODIFIERS ========== */
-
-    modifier updateReward(address account) {
-        rewardPerTokenStored = rewardPerToken();
-        lastUpdateTime = lastTimeRewardApplicable();
-        if (account != address(0)) {
-            rewards[account] = earned(account);
-            userRewardPerTokenPaid[account] = rewardPerTokenStored;
-        }
-        _;
-    }
-
 }
