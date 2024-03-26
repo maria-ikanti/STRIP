@@ -37,12 +37,12 @@ async function main() {
   await staking.sendInitialAmount(testAddr,500);
   //await stru.approve("testAddr",500);
   //const gain = await staking.gain(inAddr);
-  await staking.stake(testAddr,200);
+  //await staking.stake(testAddr,200);
   const balance = await stru.balanceOf(testAddr);
-
+    const totalSupply = await staking.totalSupply().toString();
 
   console.log(
-    `Balance for ${testAddr} is ${balance}`
+    `totalSupply is ${totalSupply}`
   );
 }
 

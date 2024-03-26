@@ -31,9 +31,11 @@ contract Staking is ReentrancyGuard, Ownable {
     uint public yeldsPerTokenStored;
 
     mapping(address => uint) public userYeldsPerTokenPaid;
+    // Yelds earned by one account
     mapping(address => uint) public yelds;
 
     uint private _totalSupply;
+    // Total deposited amount by account
     mapping(address => uint) private _balances;
 
     constructor(address _inToken, address _outToken) Ownable(msg.sender) {
@@ -44,15 +46,15 @@ contract Staking is ReentrancyGuard, Ownable {
     /**
     @notice A modifier to be executed on any deposit or withdrow 
      */
-    modifier resetYeld(address account) {
+    modifier resetYeld(address _account) {
         yeldsPerTokenStored = yeldPerToken();
         lastUpdateTime = lastTimeYeldApplicable();
 
-        if (account != address(0)) {
+        if (_account != address(0)) {
             // Update the gains table for the given account
-            yelds[account] = gain(account);
+            yelds[_account] = gain(_account);
             // Update the payed yelds for the given user
-            userYeldsPerTokenPaid[account] = yeldsPerTokenStored;
+            userYeldsPerTokenPaid[_account] = yeldsPerTokenStored;
         }
         _;
     }
@@ -68,10 +70,10 @@ contract Staking is ReentrancyGuard, Ownable {
     }
 
     /**
-    @notice Returns the total earned by an accont 
+    @notice Returns the total earned by an account 
      */
-    function gain(address account) public view returns (uint) {
-        return _balances[account]*(yeldPerToken()-userYeldsPerTokenPaid[account])/1e18 + yelds[account];
+    function gain(address _account) public view returns (uint) {
+        return _balances[_account]*(yeldPerToken()-userYeldsPerTokenPaid[_account])/1e18 + yelds[_account];
     }
 
     function lastTimeYeldApplicable() public view returns (uint) {
@@ -82,8 +84,8 @@ contract Staking is ReentrancyGuard, Ownable {
         return _totalSupply;
     }
 
-    function balanceOf(address account) external view returns (uint) {
-        return _balances[account];
+    function balanceOf(address _account) external view returns (uint) {
+        return _balances[_account];
     }
 
     /**
@@ -107,12 +109,12 @@ contract Staking is ReentrancyGuard, Ownable {
         emit Staked(_address, _amount);
     }
 
-    function withdraw(uint amount) public nonReentrant resetYeld(msg.sender) {
-        require(amount > 0, "Must withrow a positive value");
-        _totalSupply = _totalSupply - amount;
-        _balances[msg.sender] = _balances[msg.sender] - amount ;
-        outToken.safeTransfer(msg.sender, amount);
-        emit Withdrawn(msg.sender, amount);
+    function withdraw(uint _amount) public nonReentrant resetYeld(msg.sender) {
+        require(_amount > 0, "Must withrow a positive value");
+        _totalSupply = _totalSupply - _amount;
+        _balances[msg.sender] = _balances[msg.sender] - _amount ;
+        outToken.safeTransfer(msg.sender, _amount);
+        emit Withdrawn(msg.sender, _amount);
     }
 
     function getYeld() public nonReentrant resetYeld(msg.sender) {
