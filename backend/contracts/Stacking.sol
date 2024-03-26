@@ -24,17 +24,17 @@ contract Staking is ReentrancyGuard, Ownable {
 
     IERC20 public inToken;
     IERC20 public outToken;
-    uint256 public periodFinish;
-    uint256 public yeldRate;
-    uint256 public yeldDuration = 1 hours;
-    uint256 public lastUpdateTime;
-    uint256 public yeldsPerTokenStored;
+    uint public periodFinish;
+    uint public yeldRate;
+    uint public yeldDuration = 1 minutes;
+    uint public lastUpdateTime;
+    uint public yeldsPerTokenStored;
 
-    mapping(address => uint256) public userYeldsPerTokenPaid;
-    mapping(address => uint256) public yelds;
+    mapping(address => uint) public userYeldsPerTokenPaid;
+    mapping(address => uint) public yelds;
 
-    uint256 private _totalSupply;
-    mapping(address => uint256) private _balances;
+    uint private _totalSupply;
+    mapping(address => uint) private _balances;
 
     constructor(address _inToken, address _outToken) Ownable(msg.sender) {
         inToken = IERC20(_inToken);
@@ -44,61 +44,70 @@ contract Staking is ReentrancyGuard, Ownable {
     /**
     @notice A modifier to be executed on any deposit or withdrow 
      */
-    modifier updateYeld(address account) {
+    modifier resetYeld(address account) {
         yeldsPerTokenStored = yeldPerToken();
         lastUpdateTime = lastTimeYeldApplicable();
 
         if (account != address(0)) {
+            // Update the gains table for the given account
             yelds[account] = gain(account);
+            // Update the payed yelds for the given user
             userYeldsPerTokenPaid[account] = yeldsPerTokenStored;
         }
         _;
     }
 
-    function totalSupply() external view returns (uint256) {
-        return _totalSupply;
-    }
-
-    function balanceOf(address account) external view returns (uint256) {
-        return _balances[account];
-    }
-
-    function lastTimeYeldApplicable() public view returns (uint256) {
-        return block.timestamp < periodFinish ? block.timestamp : periodFinish;
-    }
-
-    function yeldPerToken() public view returns (uint256) {
+    function yeldPerToken() public view returns (uint) {
         if (_totalSupply == 0) {
             return yeldsPerTokenStored;
         }
-        uint256 periodApplicable = lastTimeYeldApplicable() - lastUpdateTime;
+        // Since the last time we made an updae
+        uint periodApplicable = lastTimeYeldApplicable() - lastUpdateTime;
+        // The period per rate, devided by the total supply
         return periodApplicable*yeldRate*1e18/_totalSupply;
     }
 
     /**
     @notice Returns the total earned by an accont 
      */
-    function gain(address account) public view returns (uint256) {
+    function gain(address account) public view returns (uint) {
         return _balances[account]*(yeldPerToken()-userYeldsPerTokenPaid[account])/1e18 + yelds[account];
+    }
+
+    function lastTimeYeldApplicable() public view returns (uint) {
+        return block.timestamp < periodFinish ? block.timestamp : periodFinish;
+    }
+
+    function totalSupply() external view returns (uint) {
+        return _totalSupply;
+    }
+
+    function balanceOf(address account) external view returns (uint) {
+        return _balances[account];
     }
 
     /**
     @notice Gets the yeld for a given duration
      */
-    function getYeldForDuration() external view returns (uint256) {
+    function getYeldForDuration() external view returns (uint) {
         return yeldRate*yeldDuration;
     }
 
 
-    function stake(uint256 amount) external nonReentrant updateYeld(msg.sender) {
-        require(amount > 0, "Amount to be staked must be > 0");
-        _totalSupply = _totalSupply + amount;
-        _balances[msg.sender] = _balances[msg.sender] + amount;
-        outToken.safeTransferFrom(msg.sender, address(this), amount);
-        emit Staked(msg.sender, amount);
+    function sendInitialAmount(address _address, uint _amount) external onlyOwner nonReentrant{
+        require(_amount > 0, "Amount to be initialized must be > 0");
+            inToken.safeTransfer(_address,_amount);
     }
 
-    function withdraw(uint256 amount) public nonReentrant updateYeld(msg.sender) {
+    function stake(address _address, uint _amount) external nonReentrant resetYeld(_address) {
+        require(_amount > 0, "Amount to be staked must be > 0");
+        _totalSupply = _totalSupply + _amount;
+        _balances[_address] = _balances[_address] + _amount;
+        outToken.safeTransferFrom(_address, address(this), _amount);
+        emit Staked(_address, _amount);
+    }
+
+    function withdraw(uint amount) public nonReentrant resetYeld(msg.sender) {
         require(amount > 0, "Must withrow a positive value");
         _totalSupply = _totalSupply - amount;
         _balances[msg.sender] = _balances[msg.sender] - amount ;
@@ -106,8 +115,8 @@ contract Staking is ReentrancyGuard, Ownable {
         emit Withdrawn(msg.sender, amount);
     }
 
-    function getYeld() public nonReentrant updateYeld(msg.sender) {
-        uint256 yeld = yelds[msg.sender];
+    function getYeld() public nonReentrant resetYeld(msg.sender) {
+        uint yeld = yelds[msg.sender];
         if (yeld > 0) {
             yelds[msg.sender] = 0;
             inToken.safeTransfer(msg.sender, yeld);

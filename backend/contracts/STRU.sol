@@ -5,7 +5,7 @@ pragma solidity ^0.8.24;
 import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract SRTU is ERC20 {
+contract Stru is ERC20 {
 
     constructor() ERC20('Faucet STRU staked token', 'STRU') {} 
  

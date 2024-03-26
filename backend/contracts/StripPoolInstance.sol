@@ -19,7 +19,7 @@ contract StripPoolInstance  {
     event CollectYeld();
     event Redeem(address underlyingTokenId);
 
-    constructor(address investorAddress, IERC20 unterlyingToken) {
+    constructor(address investorAddress) {
 
         underlyingToken = IERC20(investorAddress);
         stry = IERC20(investorAddress);
