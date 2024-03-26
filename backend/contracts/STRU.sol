@@ -7,9 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract SRTU is ERC20 {
 
-    uint reward = 3;
-
-    constructor() ERC20('Faucet AAVE staked token', 'AAVE') {} 
+    constructor() ERC20('Faucet STRU staked token', 'STRU') {} 
  
 	// fonction faucet pour créer des Dai tokens
 	function faucet(address recipient, uint amount) external {

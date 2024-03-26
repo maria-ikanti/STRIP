@@ -26,7 +26,7 @@ contract Staking is ReentrancyGuard, Ownable {
     IERC20 public outToken;
     uint256 public periodFinish;
     uint256 public yeldRate;
-    uint256 public yeldDuration = 7 days;
+    uint256 public yeldDuration = 1 hours;
     uint256 public lastUpdateTime;
     uint256 public yeldsPerTokenStored;
 
@@ -36,18 +36,24 @@ contract Staking is ReentrancyGuard, Ownable {
     uint256 private _totalSupply;
     mapping(address => uint256) private _balances;
 
-    /* ========== CONSTRUCTOR ========== */
-
-    constructor(
-        address _owner,
-        address _inToken,
-        address _outToken
-    ) Ownable(_owner) {
+    constructor(address _inToken, address _outToken) Ownable(msg.sender) {
         inToken = IERC20(_inToken);
         outToken = IERC20(_outToken);
     }
 
-    /* ========== VIEWS ========== */
+    /**
+    @notice A modifier to be executed on any deposit or withdrow 
+     */
+    modifier updateYeld(address account) {
+        yeldsPerTokenStored = yeldPerToken();
+        lastUpdateTime = lastTimeYeldApplicable();
+
+        if (account != address(0)) {
+            yelds[account] = gain(account);
+            userYeldsPerTokenPaid[account] = yeldsPerTokenStored;
+        }
+        _;
+    }
 
     function totalSupply() external view returns (uint256) {
         return _totalSupply;
@@ -69,27 +75,20 @@ contract Staking is ReentrancyGuard, Ownable {
         return periodApplicable*yeldRate*1e18/_totalSupply;
     }
 
-    function earned(address account) public view returns (uint256) {
+    /**
+    @notice Returns the total earned by an accont 
+     */
+    function gain(address account) public view returns (uint256) {
         return _balances[account]*(yeldPerToken()-userYeldsPerTokenPaid[account])/1e18 + yelds[account];
     }
 
+    /**
+    @notice Gets the yeld for a given duration
+     */
     function getYeldForDuration() external view returns (uint256) {
         return yeldRate*yeldDuration;
     }
 
-    /* ========== MODIFIERS ========== */
-
-    modifier updateYeld(address account) {
-        yeldsPerTokenStored = yeldPerToken();
-        lastUpdateTime = lastTimeYeldApplicable();
-        if (account != address(0)) {
-            yelds[account] = earned(account);
-            userYeldsPerTokenPaid[account] = yeldsPerTokenStored;
-        }
-        _;
-    }
-
-    /* ========== MUTATIVE FUNCTIONS ========== */
 
     function stake(uint256 amount) external nonReentrant updateYeld(msg.sender) {
         require(amount > 0, "Amount to be staked must be > 0");
@@ -100,7 +99,7 @@ contract Staking is ReentrancyGuard, Ownable {
     }
 
     function withdraw(uint256 amount) public nonReentrant updateYeld(msg.sender) {
-        require(amount > 0, "Cannot withdraw 0");
+        require(amount > 0, "Must withrow a positive value");
         _totalSupply = _totalSupply - amount;
         _balances[msg.sender] = _balances[msg.sender] - amount ;
         outToken.safeTransfer(msg.sender, amount);
@@ -121,9 +120,8 @@ contract Staking is ReentrancyGuard, Ownable {
         getYeld();
     }
 
-    /* ========== RESTRICTED FUNCTIONS ========== */
 
-    function notifyYeldAmount(uint256 _yeld) external updateYeld(address(0)) {
+/*    function notifyYeldAmount(uint256 _yeld) external updateYeld(address(0)) {
         if (block.timestamp >= periodFinish) {
             yeldRate = _yeld / yeldDuration;
         } else {
@@ -142,7 +140,7 @@ contract Staking is ReentrancyGuard, Ownable {
         lastUpdateTime = block.timestamp;
         periodFinish = block.timestamp + yeldDuration;
         emit YeldAdded(_yeld);
-    }
+    } 
 
 
     function setYeldDuration(uint256 _yeldDuration) external onlyOwner {
@@ -152,5 +150,5 @@ contract Staking is ReentrancyGuard, Ownable {
         );
         yeldDuration = _yeldDuration;
         emit YeldDurationUpdated(yeldDuration);
-    }
+    } */
 }
