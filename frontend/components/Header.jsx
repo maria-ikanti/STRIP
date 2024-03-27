@@ -1,5 +1,5 @@
 "use client"
-import { Flex, Text } from '@chakra-ui/react'
+import { Flex, Text, Box, Image } from '@chakra-ui/react'
 import { ConnectButton } from '@rainbow-me/rainbowkit'
 
 const Header = () => {
@@ -9,8 +9,8 @@ const Header = () => {
         alignItems="center"
         p="2rem"
     >
-        <Text>Logo</Text>
-        <ConnectButton />
+            <Image src='logo.png' alt='Strip project' boxSize='120px'/>
+        <ConnectButton w='100%' />
     </Flex>
   )
 }

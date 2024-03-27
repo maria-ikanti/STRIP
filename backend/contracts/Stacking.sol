@@ -25,7 +25,7 @@ contract Staking is ReentrancyGuard, Ownable {
     IERC20 public inToken;
     IERC20 public outToken;
     uint public periodFinish;
-    uint public yeldRate;
+    uint public yeldRate=3;
     uint public yeldDuration = 1 minutes;
     uint public lastUpdateTime;
     uint public yeldsPerTokenStored;
@@ -63,7 +63,7 @@ contract Staking is ReentrancyGuard, Ownable {
         if (_totalSupply == 0) {
             return yeldsPerTokenStored;
         }
-        // Since the last time we made an updae
+        // Since the last time we made an update
         uint periodApplicable = lastTimeYeldApplicable() - lastUpdateTime;
         // The period per rate, devided by the total supply
         return periodApplicable*yeldRate*1e18/_totalSupply;
@@ -132,7 +132,7 @@ contract Staking is ReentrancyGuard, Ownable {
     }
 
 
-/*    function notifyYeldAmount(uint256 _yeld) external updateYeld(address(0)) {
+    function notifyYeldAmount(uint256 _yeld) external resetYeld(address(0)) {
         if (block.timestamp >= periodFinish) {
             yeldRate = _yeld / yeldDuration;
         } else {
@@ -161,5 +161,5 @@ contract Staking is ReentrancyGuard, Ownable {
         );
         yeldDuration = _yeldDuration;
         emit YeldDurationUpdated(yeldDuration);
-    } */
+    } 
 }

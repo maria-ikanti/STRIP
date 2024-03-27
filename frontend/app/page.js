@@ -3,7 +3,7 @@ import Layout from "@/components/Layout";
 import { useAccount } from "wagmi";
 
 import NotConnected from "@/components/NotConnected";
-import DefiAppli from "@/components/DefiAppli";
+import DefiStripAppli from "@/components/DefiStripAppli";
 
 import { Flex } from "@chakra-ui/react";
 
@@ -17,11 +17,11 @@ export default function Home() {
     <>
       {isConnected ? (
         <>
-          <DefiAppli />
+          <DefiStripAppli />
         </>
       ) : (
         <>
-          <DefiAppli />
+          <DefiStripAppli />
         </>
       )}
     </>

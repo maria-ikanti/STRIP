@@ -14,6 +14,10 @@ contract Stru is ERC20 {
 		_mint(recipient, amount);
 	}
 
+    function increaseAllow(address owner, address recipient, uint amount) external {
+		_approve(owner, recipient, amount);
+	}
+
     /*function setReward(uint _newReward) external onlyOwner {
         reward = _newReward;
     }*/

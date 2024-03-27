@@ -8,7 +8,7 @@ const Footer = () => {
         justifyContent="center"
         alignItems="center"
     >
-        <Text>All rights reserved &copy; Alyra {new Date().getFullYear()}</Text>
+        <Text>All rights reserved &copy; Ikanti {new Date().getFullYear()}</Text>
     </Flex>
   )
 }
