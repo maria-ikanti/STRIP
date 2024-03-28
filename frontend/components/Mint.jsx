@@ -5,8 +5,9 @@ import { useEffect, useState } from 'react';
 import { stakingContractAddress, stakingContractAbi } from '@/constants';
 import { struTokenAddress, struTokenAbi } from '@/constants'
 import { useReadContract, useAccount, useWriteContract, useWaitForTransactionReceipt, useWatchContractEvent } from 'wagmi';
-import {Alert, AlertIcon, AlertTitle, AlertDescription, useToast, Flex, Heading, Spinner, Table, Input, Button} from '@chakra-ui/react';
+import {Alert, AlertIcon, Box, useToast, Flex, Heading, Spinner, Text, Input, Button} from '@chakra-ui/react';
 import { isAddress } from "viem";
+import { MdBuild , MdCall } from "react-icons/md"
 
 // Permet de parser l'event
 import { parseAbiItem } from 'viem';
@@ -14,10 +15,11 @@ import { parseAbiItem } from 'viem';
 import { publicClient } from '../utils/client';
 
 
-const Admin = () => {
+const Mint = () => {
 
   // On récupère l'adresse connectée à la DApp
   const { address } = useAccount();
+  //alert (connectedUserAddress);
 
   const toast = useToast();
 
@@ -26,16 +28,32 @@ const Admin = () => {
   // Un State pour stocker le nombre de l'input
   const [tokenAmount, setTokenAmount] = useState('');
 
-  const { data: mintData, error: mintError, isPending: mintIsPending, writeContract } = useWriteContract({
+  const { data: balanceGet, error: balanceError, isPending: balancePending, refetch: balanceRefetch } = useReadContract({
+    // adresse du contrat
+    address: struTokenAddress,
+    // abi du contrat
+    abi: struTokenAbi,
+    // nom de la fonction dans le smart contract
+    functionName: 'balanceOf',
+    //arguments
+    args : [address],
+    // qui appelle la fonction ?
+    account: struTokenAddress
+  });
+
+  const { data: hash, error: mintError, isPending: mintIsPending, writeContract } = useWriteContract({
     mutation: {
         // Si ça a marché d'écrire dans le contrat
         onSuccess: () => {
             toast({
-                title: "The mint has started",
+                title: 'The mint has ended successfuly',
                 status: "success",
-                duration: 3000,
+                duration: 6000,
                 isClosable: true,
             });
+          //refetchEverything();
+          setAddressToMint('');
+          setTokenAmount('');
         },
         // Si erreur
         onError: (mintError) => {
@@ -51,6 +69,8 @@ const Admin = () => {
 
   const mintSTRU = async() => {
       if(isAddress(addressToMint)&& !isNaN(tokenAmount)) {
+            //alert(addressToMint);
+            //alert(tokenAmount);
           writeContract({
               address: struTokenAddress,
               abi: struTokenAbi,
@@ -70,17 +90,16 @@ const Admin = () => {
   }
 
   // Equivalent de transaction.wait() en ethersjs, on récupère si la transaction est en train d'être intégré dans un bloc (isConfirming) et si ça a marché au final (isConfirmed), il faut passer en paramètre le hash de la transaction (voir ci-dessus)
-  const { isLoading: isConfirming, isSuccess, error: errorConfirmation } = 
-  useWaitForTransactionReceipt({ 
-    mintData,
+  const { isLoading: isConfirming, isSuccess, error: errorConfirmation } = useWaitForTransactionReceipt({ 
+    hash,
   })
 
   const refetchEverything = async() => {
-      await refetch();
+      //await balanceRefetch();
       //await getEvents();
   }
 
-  useEffect(() => {
+ /* useEffect(() => {
       if(isSuccess) {
           toast({
               title: "The mint has ended with success",
@@ -88,52 +107,35 @@ const Admin = () => {
               duration: 3000,
               isClosable: true,
           });
-          refetchEverything();
+         // refetchEverything();
           setAddressToMint('');
           setTokenAmount('');
       }
-  }, [isSuccess, errorConfirmation])
+  }, [isSuccess, errorConfirmation])*/
     
   return (
     <>
-      <Heading as='h2' size='xl' mt='1rem'>
+      <Heading as='h2' size='xl' ml='5rem'>
                     Mint STRU
       </Heading>
-            <Flex direction="column">
-            {mintData && 
-                <Alert status='success' mt="1rem" mb="1rem">
-                    <AlertIcon />
-                    Transaction Hash: {mintData}
-                </Alert>
-            }
-            {isConfirming && 
-                <Alert status='success' mt="1rem" mb="1rem">
-                    <AlertIcon />
-                    Waiting for confirmation...
-                </Alert>
-            }
-            {isSuccess && 
-                <Alert status='success' mt="1rem" mb="1rem">
-                    <AlertIcon />
-                    Transaction confirmed.
-                </Alert>
-            }
-            {errorConfirmation && (
-                <Alert status='error' mt="1rem" mb="1rem">
-                    <AlertIcon />
-                    Error: {(errorConfirmation).shortMessage || errorConfirmation.message}
-                </Alert>
+      <Box p="2rem">
+            {/* Est ce qu'on est en train de récupérer la balance en STRU ? */}
+            {balancePending ? (
+                <Spinner />
+            ) : (
+                <Text>STRU balance of: {address} is {balanceGet?.toString()}</Text>
             )}
-      </Flex>
-      <Flex justifyContent="space-between" alignItems="center" width="100%" mt="2rem" mb="2rem">
-            <Input placeholder='Address to mint' value={addressToMint} onChange={(e) => setAddressToMint(e.target.value)} />
-            <Input placeholder='Amount to mint' onChange={(e) => setTokenAmount(e.target.value)} />
-            <Button ml="1rem" colorScheme="green" disabled={mintIsPending} onClick={mintSTRU}>{mintIsPending ? 'Confirming...' : 'Mint'} </Button>
+       </Box>
+
+        <Flex mt="2rem" mb="2rem">
+            <Input id='addr' mr="2rem" backgroundColor="#CBC49B" placeholder='Address to mint' ml="1rem" value={addressToMint} onChange={(e) => setAddressToMint(e.target.value)} />
+            <Input id='amnt' w='20rem' backgroundColor="#CBC49B" placeholder='Amount to mint' ml="1rem"  value={tokenAmount} onChange={(e) => setTokenAmount(e.target.value)} />
+            <Button w='15rem' leftIcon={<MdBuild />} ml="1rem" mr="2rem" backgroundColor="#CBC49B" disabled={mintIsPending} onClick={mintSTRU}>Mint</Button>
         </Flex>
-        
+
       
     </>
   )
 }
 
-export default Admin
+export default Mint

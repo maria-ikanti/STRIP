@@ -1,6 +1,6 @@
 // Dans ce fichier je viens récupérer les informations indispensables pour communiquer avec un contrat intelligent : l'adresse du contract et son abi.
-export const struTokenAddress="0x95401dc811bb5740090279Ba06cfA8fcF6113778";
-export const stakingContractAddress="0x998abeb3E57409262aE5b751f60747921B33613E";
+export const struTokenAddress="0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9";
+export const stakingContractAddress="0xBcd4042DE499D14e55001CcbB24a551F3b954096";
 export const stakingContractAbi=[
   {
     "inputs": [
@@ -673,6 +673,10 @@ export const struTokenAbi=[
     "type": "event"
   },
   {
+    "stateMutability": "payable",
+    "type": "fallback"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -779,12 +783,12 @@ export const struTokenAbi=[
     "inputs": [
       {
         "internalType": "address",
-        "name": "recipient",
+        "name": "_recipient",
         "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "amount",
+        "name": "_amount",
         "type": "uint256"
       }
     ],
@@ -884,5 +888,9 @@ export const struTokenAbi=[
     ],
     "stateMutability": "nonpayable",
     "type": "function"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "receive"
   }
 ]

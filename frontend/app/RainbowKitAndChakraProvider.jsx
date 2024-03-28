@@ -3,7 +3,7 @@
 import '@rainbow-me/rainbowkit/styles.css';
 import { ChakraProvider } from '@chakra-ui/react'
 import {
-    RainbowKitProvider,
+    RainbowKitProvider, darkTheme,
     getDefaultConfig,
     getDefaultWallets,
 } from "@rainbow-me/rainbowkit";
@@ -42,7 +42,13 @@ const RainbowKitAndChakraProvider = ({ children }) => {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider>
+        <RainbowKitProvider theme={darkTheme({
+                                  accentColor: '#CBC49B',
+                                  accentColorForeground: 'black',
+                                  borderRadius: 'small',
+                                  fontStack: 'system',
+                                  overlayBlur: 'small',
+                                })}>
           <ChakraProvider>
             {children}
           </ChakraProvider>

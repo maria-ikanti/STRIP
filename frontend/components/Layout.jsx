@@ -5,18 +5,15 @@ import { Flex } from '@chakra-ui/react'
 
 const Layout = ({ children }) => {
   return (
-    <Flex
+    <Flex bgGradient='linear(to-b, #26526A, #4A9DCC)'
       direction="column"
       minH="100vh"
       justifyContent="center"
     >
         <Header />
-        <Flex
-          grow="1"
-          p="2rem"
-        >
+
             {children}
-        </Flex>
+
         <Footer />
     </Flex>
   )
