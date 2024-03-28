@@ -10,7 +10,7 @@ contract Stru is ERC20 {
     constructor() ERC20('Faucet STRU staked token', 'STRU') {} 
  
 	// fonction faucet pour créer des Dai tokens
-	function faucet(address recipient, uint amount) external {
+	function mint(address recipient, uint amount) external {
 		_mint(recipient, amount);
 	}
 

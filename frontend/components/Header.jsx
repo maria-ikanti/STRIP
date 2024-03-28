@@ -9,8 +9,8 @@ const Header = () => {
         alignItems="center"
         p="2rem"
     >
-            <Image src='logo.png' alt='Strip project' boxSize='120px'/>
-        <ConnectButton w='100%' />
+        <Image src='logo.png' alt='Strip project' boxSize='120px'/>
+        <ConnectButton/>
     </Flex>
   )
 }

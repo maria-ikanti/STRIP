@@ -1,9 +1,11 @@
 'use client';
 import Layout from "@/components/Layout";
+
 import { useAccount } from "wagmi";
 
 import NotConnected from "@/components/NotConnected";
 import DefiStripAppli from "@/components/DefiStripAppli";
+import Admin from "@/components/Admin";
 
 import { Flex } from "@chakra-ui/react";
 
@@ -17,11 +19,11 @@ export default function Home() {
     <>
       {isConnected ? (
         <>
-          <DefiStripAppli />
+          <Admin />
         </>
       ) : (
         <>
-          <DefiStripAppli />
+          <Admin />
         </>
       )}
     </>

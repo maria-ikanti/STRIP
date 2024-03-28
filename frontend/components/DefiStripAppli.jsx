@@ -3,7 +3,8 @@
 
 import { useEffect, useState } from 'react'; 
 // On importe les données du contrat
-import { contractAddress, contractAbi } from '@/constants'
+import { stakingContractAddress, stakingContractAbi } from '@/constants'
+import { struTokenAddress, struTokenAbi } from '@/constants'
 
 // On importe les éléments de Wagmi qui vont nous permettre de :
 /*
@@ -28,7 +29,7 @@ const DefiStripAppli = () => {
   const { address } = useAccount();
 
   // Un State pour stocker le nombre de l'input
-  const [stakAmount, setStakAmount] = useState(null);
+  const [stakeAmount, setStakeAmount] = useState(null);
   // Un State pour stocker les events
   const [events, setEvents] = useState([])
 
@@ -42,13 +43,50 @@ const DefiStripAppli = () => {
   // refetch (pas renommé) : Permet de rappeler par la suite cette fonction
   const { data: supplyGet, error: getError, isPending: getIsPending, refetch } = useReadContract({
       // adresse du contrat
-      address: contractAddress,
+      address: stakingContractAddress,
       // abi du contrat
-      abi: contractAbi,
+      abi: stakingContractAbi,
       // nom de la fonction dans le smart contract
       functionName: 'totalSupply',
       // qui appelle la fonction ?
       account: address
+  });
+
+  const { data: balanceGet, error: balanceError, isPending: balancePending, balanceRefetch } = useReadContract({
+    // adresse du contrat
+    address: stakingContractAddress,
+    // abi du contrat
+    abi: stakingContractAbi,
+    // nom de la fonction dans le smart contract
+    functionName: 'balanceOf',
+    //arguments
+    args : [address],
+    // qui appelle la fonction ?
+    account: address
+  });
+
+  const { data: allowanceGet, error: allowanceError, isPending: allowanceIsPending, allowanceRefetch } = useReadContract({
+    // adresse du contrat
+    address: struTokenAddress,
+    // abi du contrat
+    abi: struTokenAbi,
+    // nom de la fonction dans le smart contract
+    functionName: 'allowance',
+    //arguments
+    args : [struTokenAddress, stakingContractAddress],
+    // qui appelle la fonction ?
+    account: address
+  });
+
+  const { data: gainGet, error: gainError, isPending: gainPending, gainRefetch } = useReadContract({
+    // adresse du contrat
+    address: stakingContractAddress,
+    // abi du contrat
+    abi: stakingContractAbi,
+    // nom de la fonction dans le smart contract
+    functionName: 'gain',
+    // qui appelle la fonction ?
+    account: address
   });
 
       // Permet d'écrire dans un contrat (et donc de faire une transaction)
@@ -56,23 +94,47 @@ const DefiStripAppli = () => {
     // error (non renommé) : il y a t-il une erreur ?
     // isPending renommé en setIsPending : est-on en train d'écrire dans le contrat ?
     // writeContract : on pourra appeler cette fonction pour ensuite vraiment écrire dans le contrat plus tard
+        // augmenter allowance before staking
+    const { data: approveStruGet, error: approveStruError, isPending: approveStruIsPending, writeContract: approveStru } = useWriteContract();
     const { data: hash, error, isPending: setIsPending, writeContract } = useWriteContract();
 
+    /* Lorsque l'utilisateur clique sur le bouton set on augmente l'allowance du contrat pour les
+    const setStruApproveAmount = async() => {
+        // alors on écrit vraiment dans le contrat intelligent (fonction store du contrat)
+        approveStru({ 
+            address: struTokenAddress, 
+            abi: struTokenAbi,
+            functionName: 'approve', 
+            args: [stakingContractAddress, struTokenAddress,stakeAmount], 
+            account : address
+        }) 
+    }*/
+    
     // Lorsque l'utilisateur clique sur le bouton set
     const setTheAmount = async() => {
         // alors on écrit vraiment dans le contrat intelligent (fonction store du contrat)
+        approveStru({ 
+            address: struTokenAddress, 
+            abi: struTokenAbi,
+            functionName: 'approve', 
+            args: [stakingContractAddress, struTokenAddress,stakeAmount], 
+            account : struTokenAddress
+        }) 
         writeContract({ 
-            address: contractAddress, 
-            abi: contractAbi,
-            functionName: 'stack', 
-            args: [stakAmount], 
+            address: stakingContractAddress, 
+            abi: stakingContractAbi,
+            functionName: 'stake', 
+            args: [address,stakeAmount], 
             account : address
         }) 
     }
 
+
+
     // Equivalent de transaction.wait() en ethersjs, on récupère si la transaction est en train d'être intégré dans un bloc (isConfirming) et si ça a marché au final (isConfirmed), il faut passer en paramètre le hash de la transaction (voir ci-dessus)
     const { isLoading: isConfirming, isSuccess, error: errorConfirmation } = 
     useWaitForTransactionReceipt({ 
+        approveStruGet,
         hash,
     })
 
@@ -84,7 +146,7 @@ const DefiStripAppli = () => {
     useEffect(() => {
         if(isSuccess) {
             toast({
-                title: "Vous avez stacké",
+                title: "You stacked successfully",
                 status: "success",
                 duration: 3000,
                 isClosable: true,
@@ -105,7 +167,7 @@ const DefiStripAppli = () => {
   const getEvents = async() => {
     // On récupère tous les events Staked
     const stakedLog = await publicClient.getLogs({
-        address: contractAddress,
+        address: stakingContractAddress,
         event: parseAbiItem('event Staked(address indexed user, uint256 amount)'),
         // du premier bloc
         fromBlock: 0n,
@@ -137,21 +199,46 @@ const DefiStripAppli = () => {
     <>
       <Flex direction="column"width="100%">
         <Heading as='h4' size='md' mb="1rem">
-            Total supply
+            Total STRU supply
         </Heading>
-        <Text>Contract address : {contractAddress}</Text>
+        <Text>Staking contract address : {stakingContractAddress}</Text>
+        <Text>STRU token address : {struTokenAddress}</Text>
         <Text>Caller address : {address}</Text>
+
+        <Heading as='h4' size='md' mb="1rem" mt="1rem">
+            Total staked amount for connected user :
+        </Heading>
         <Flex>
             {/* Est ce qu'on est en train de récupérer le nombre ? */}
-            {getIsPending ? (
+            {balancePending ? (
                 <Spinner />
             ) : (
-                <Text>Result : {supplyGet?.toString()}</Text>
+                <Text>STRU : {balanceGet?.toString()}</Text>
+            )}
+        </Flex>
+        <Flex>
+            {/* Est ce qu'on est en train de récupérer l'allowance ? */}
+            {allowanceIsPending ? (
+                <Spinner />
+            ) : (
+                <Text>Allowance for STRU contact : {allowanceGet?.toString()}</Text>
+            )}
+        </Flex>
+
+        <Heading as='h4' size='md' mb="1rem" mt="1rem">
+            Account stacking gain :
+        </Heading>
+        <Flex>
+            {/* Est ce qu'on est en train de récupérer le nombre ? */}
+            {gainPending ? (
+                <Spinner />
+            ) : (
+                <Text>Gain : {gainGet?.toString()}</Text>
             )}
         </Flex>
 
         <Heading as='h4' size='md' mt="2rem" mb="1rem">
-            Set
+            Stake STRU
         </Heading>
         <Flex direction="column">
             {hash && 
@@ -186,12 +273,9 @@ const DefiStripAppli = () => {
             )} 
         </Flex>
         <Flex>
-            <Input placeholder='Amount to stak' onChange={(e) => setStakAmount(e.target.value)} />
-            <Button disabled={setIsPending} onClick={setTheAmount}>{setIsPending ? 'Confirming...' : 'Set'} </Button>
+            <Input placeholder='Amount to stake' onChange={(e) => setStakeAmount(e.target.value)} />
+            <Button ml="1rem" disabled={setIsPending} onClick={setTheAmount}>{setIsPending ? 'Confirming...' : 'Stake'} </Button>
         </Flex>
-
-    </Flex>
-    <Flex>
         <Heading as='h4' size='md' mt="2rem" mb="2rem">
             Events
         </Heading>
@@ -203,7 +287,8 @@ const DefiStripAppli = () => {
                 </Flex>
             })}
         </Flex>
-        </Flex>
+
+    </Flex>
     </>
   )
 }
