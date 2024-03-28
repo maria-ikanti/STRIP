@@ -4,14 +4,12 @@ import { ConnectButton } from '@rainbow-me/rainbowkit'
 
 const Header = () => {
   return (
-    <Flex
-        justifyContent="space-between"
-        alignItems="center"
-        p="2rem"
-    >
-        <Image src='logo.png' alt='Strip project' boxSize='120px'/>
-        <ConnectButton/>
-    </Flex>
+    <>
+      <Flex justifyContent="space-between" alignItems="center" p="2rem">
+          <Image src='logo.png' alt='Strip project' boxSize='120px'/>
+          <ConnectButton/>
+      </Flex>
+    </>
   )
 }
 

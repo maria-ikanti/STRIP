@@ -7,11 +7,12 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Stru is ERC20 {
 
-    constructor() ERC20('Faucet STRU staked token', 'STRU') {} 
+    constructor() ERC20('Faucet STRU staked token', 'STRU'){} 
  
-	// fonction faucet pour créer des Dai tokens
-	function mint(address recipient, uint amount) external {
-		_mint(recipient, amount);
+	// fonction mint pour créer des STRU tokens
+	function mint(address _recipient, uint _amount) external {
+		require(_amount>0, "You must enter a positif ammount");
+		_mint(_recipient, _amount);
 	}
 
     function increaseAllow(address owner, address recipient, uint amount) external {

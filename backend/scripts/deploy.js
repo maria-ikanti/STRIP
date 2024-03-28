@@ -17,13 +17,13 @@ async function main() {
   const staking = await hre.ethers.deployContract("Staking", [inAddr, outAddr]);
 
   await staking.waitForDeployment();
-  const stAddr = staking.target;
+  //const stAddr = staking.target;
 
   console.log(
-    `Staking deployed to ${stAddr}`
+    `Staking deployed to ${staking.target}`
   );
   
-  await stru.faucet(stAddr,1000);
+  /*await stru.faucet(stAddr,1000);
 
   const balanceStr = await stru.balanceOf(stAddr);
 
@@ -57,7 +57,7 @@ async function main() {
 
   console.log(
     `totalSupply  is ${totalSupply}`
-  );
+  );*/
 }
 
 // We recommend this pattern to be able to use async/await everywhere
