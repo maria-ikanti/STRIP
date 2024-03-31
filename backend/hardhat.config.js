@@ -5,7 +5,8 @@ require("@nomicfoundation/hardhat-toolbox");
 require('dotenv').config();
 require("@nomicfoundation/hardhat-verify");
 require("hardhat-gas-reporter");
-require("@nomicfoundation/hardhat-toolbox");
+require('hardhat-docgen');
+//require("@nomicfoundation/hardhat-toolbox");
 //require("@solidity-coverage");
 //require("@nomiclabs/hardhat-ethers");
 
@@ -40,6 +41,11 @@ module.exports = {
     hardhat: {
       //blockGasLimit: 1000000000000000000,
     },
+  },
+  docgen: {
+    path: './docs',
+    clear: true,
+    runOnCompile: true,
   },
   etherscan: {
     apiKey: "ZNPK55T4WF1NTTMS16ZTNKA2SWCYBPADDT"
