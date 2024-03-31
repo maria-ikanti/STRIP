@@ -5,6 +5,8 @@ require("@nomicfoundation/hardhat-toolbox");
 require('dotenv').config();
 require("@nomicfoundation/hardhat-verify");
 require("hardhat-gas-reporter");
+require("@nomicfoundation/hardhat-toolbox");
+//require("@solidity-coverage");
 //require("@nomiclabs/hardhat-ethers");
 
  // /!\ 
@@ -20,7 +22,7 @@ const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "";
 
 module.exports = {
   // Spécifie le réseau par défaut pour Hardhat, qui est défini sur "hardhat".
-  defaultNetwork: "localhost",
+  defaultNetwork: "hardhat",
   // Définit les configurations pour différents réseaux. Dans cet exemple, 
   // il y a un réseau "sepolia" (chaine de blocs fictive) et un réseau "localhost"
   // pour le développement en local.
@@ -34,6 +36,9 @@ module.exports = {
     localhost: {
       url: "http://127.0.0.1:8545",
       chainId: 31337,
+    },
+    hardhat: {
+      //blockGasLimit: 1000000000000000000,
     },
   },
   etherscan: {

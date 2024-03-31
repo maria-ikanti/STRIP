@@ -15,9 +15,9 @@ contract Strip is ReentrancyGuard, Ownable {
 
     function strip(address _address, uint _amount) external nonReentrant {
             STRP strp = new STRP();
-            strp.mintp(_address, _amount);
-            STRY stry = new STRY();
-            stry.minty(_address, _amount);
+           // strp.mintp(_address, _amount);
+          //  STRY stry = new STRY();
+           // stry.mint(_address, _amount);
     }
 
 }
