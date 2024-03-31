@@ -14,7 +14,7 @@ async function main() {
   const inAddr = Stru.target;
   const outAddr = Stru.target;
 
-  const staking = await hre.ethers.deployContract("Staking", [inAddr, outAddr]);
+  const staking = await hre.ethers.deployContract("Staking", [inAddr, outAddr, 3, 2]);
 
   await staking.waitForDeployment();
   //const stAddr = staking.target;
@@ -22,15 +22,21 @@ async function main() {
   console.log(
     `Staking deployed to ${staking.target}`
   );
+
+  const yeldForDuration = await staking.getYeldForDuration();
+
+  console.log(
+    `getYeldForDuration is  ${yeldForDuration.toString()}`
+  );
   
-  const testAddr = "0xBcd4042DE499D14e55001CcbB24a551F3b954096";
+ /*const testAddr = "0xBcd4042DE499D14e55001CcbB24a551F3b954096";
   await stru.mint(testAddr,1000);
 
   const balanceStr = await stru.balanceOf(testAddr);
 
   console.log(
     `Balance of  ${testAddr} is ${balanceStr.toString()}`
-  );
+  );*/
 
  
   /*await staking.sendInitialAmount(testAddr,500);

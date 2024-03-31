@@ -22,12 +22,4 @@ contract Stru is ERC20 {
 	receive() external payable {}
 	fallback() external payable {}
 
-	
-
-    /*function setReward(uint _newReward) external onlyOwner {
-        reward = _newReward;
-    }*/
-
-
-
 }

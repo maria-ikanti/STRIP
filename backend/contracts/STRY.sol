@@ -6,14 +6,11 @@ import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
 
 contract STRY is ERC20 {
 
-    uint public yeld;
-
-    constructor() ERC20('STRIP Yueld token', 'STRY') {} 
+    constructor() ERC20('STRIP Yeld token', 'STRY') {} 
  
 	// fonction faucet pour créer des Dai tokens
-	function faucet(address recipient, uint amount) external {
+	function minty(address recipient, uint amount) external {
 		_mint(recipient, amount);
 	}
-
 
 }
