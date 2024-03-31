@@ -5,7 +5,6 @@ pragma solidity ^0.8.24;
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./STRP.sol";
 import "./STRY.sol";
-import "./Strip.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -17,7 +16,9 @@ event Staked(address indexed user, uint256 amount);
 event Withdrawn(address indexed user, uint256 amount);
 event YeldPaid(address indexed user, uint256 reward);
 event YeldDurationUpdated(uint256 newDuration);
+event PeriodFinishedUpdated(uint256 newPeriodFinished);
 event Recovered(address token, uint256 amount);
+event Exit(address sender, uint256 amount);
 
 contract Staking is ReentrancyGuard, Ownable {
 
@@ -27,16 +28,15 @@ contract Staking is ReentrancyGuard, Ownable {
 
     IERC20 public inToken;
     IERC20 public outToken;
-    Strip public stripContract;
-    uint256 public periodFinish;
-    /// @notice 3% per period
+    //Strip public stripContract;
+    uint256 public periodFinish = 0; // maturity
     uint256 public yeldRate;
     uint256 public yeldDuration = 1 minutes;
     uint256 public lastUpdateTime;
     uint256 public yeldsPerTokenStored;
 
 
-    /// @notice Yealds already payed for each staked token
+    /// @notice Yelds already payed for each staked token
     mapping(address => uint) public userYeldsPerTokenPaid;
     // Yelds earned by one account
     mapping(address => uint) public yelds;
@@ -51,7 +51,7 @@ contract Staking is ReentrancyGuard, Ownable {
         outToken = IERC20(_outToken);
         yeldRate = _yeldRate;
         yeldDuration=_yeldDuration;
-        stripContract = new Strip();
+        //stripContract = new Strip();
     }
 
     /**
@@ -79,18 +79,20 @@ contract Staking is ReentrancyGuard, Ownable {
         return periodApplicable*yeldRate*1e18/_totalSupply;
     }
 
+    /** @notice The last time the yeld was applied
+    @return uint256 period (datetime)
+    */
+    function lastTimeYeldApplicable() public view returns (uint256) {
+        return block.timestamp < periodFinish ? block.timestamp : periodFinish;
+    }
+
     /**
     @notice Returns the total earned by a given account 
      */
     function earned(address _account) public view returns (uint256) {
-        return _balances[_account]*(yeldPerToken()-userYeldsPerTokenPaid[_account])/1e18 + yelds[_account];
-    }
-
-    /** @notice The last time the yeld was applied
-        @return uint256 period (datetime)
-    */
-    function lastTimeYeldApplicable() public view returns (uint256) {
-        return block.timestamp < periodFinish ? block.timestamp : periodFinish;
+        uint256 earnedAmount = _balances[_account]*(yeldPerToken()-userYeldsPerTokenPaid[_account])/1e18 + yelds[_account];
+        earnedAmount = 5;
+        return earnedAmount;
     }
 
     /**
@@ -120,10 +122,10 @@ contract Staking is ReentrancyGuard, Ownable {
     /**
     @notice
      */
-    function sendInitialAmount(address _address, uint _amount) external onlyOwner nonReentrant{
+   /* function sendInitialAmount(address _address, uint _amount) external onlyOwner nonReentrant{
         require(_amount > 0, "Amount to be initialized must be > 0");
             inToken.safeTransfer(_address,_amount);
-    }
+    }*/
 
     /**
     @notice the main staking function. Stakes the ERC20 token for a given address in the smart contact
@@ -144,8 +146,10 @@ contract Staking is ReentrancyGuard, Ownable {
     @notice Allows the user to withdraw the staked tokens
     @param _amount the amount to be withdrawn
      */
-    function withdraw(uint _amount) public nonReentrant resetYeld(msg.sender) {
+    function withdraw(uint256 _amount) public nonReentrant resetYeld(msg.sender) {
         require(_amount > 0, "Must withrow a positive value");
+        uint256 tempBalance = _balances[msg.sender];
+        require (_amount <= tempBalance, "You don't have enough tokens");
         _totalSupply = _totalSupply - _amount;
         _balances[msg.sender] = _balances[msg.sender] - _amount ;
         outToken.safeTransfer(msg.sender, _amount);
@@ -153,24 +157,24 @@ contract Staking is ReentrancyGuard, Ownable {
     }
 
     /**
-    @notice  Getq the yelds */
-    function getYeld() public nonReentrant resetYeld(msg.sender) {
+    @notice  Claim the yelds */
+    function claimYeld() public nonReentrant resetYeld(msg.sender) {
         uint256 yeld = yelds[msg.sender];
-        if (yeld > 0) {
-            yelds[msg.sender] = 0;
-            inToken.safeTransfer(msg.sender, yeld);
-            emit YeldPaid(msg.sender, yeld);
-        }
+        require (yeld>0, "You have no yelds");
+        yelds[msg.sender] = 0;
+        inToken.safeTransfer(msg.sender, yeld);
+        emit YeldPaid(msg.sender, yeld);
     }
 
     /**
     @notice Withdraw the total of the amount staked */
     function exit() external {
         withdraw(_balances[msg.sender]);
-        getYeld();
+        claimYeld();
+        emit Exit(msg.sender, _balances[msg.sender]);
     }
 
-  /*  function notifyYeldAmount(uint256 _yeld) external resetYeld(address(0)) {
+    /*function notifyYeldAmount(uint256 _yeld) external resetYeld(address(0)) {
         if (block.timestamp >= periodFinish) {
             yeldRate = _yeld / yeldDuration;
         } else {
@@ -191,6 +195,14 @@ contract Staking is ReentrancyGuard, Ownable {
         emit YeldAdded(_yeld);
     } */
 
+    /*function setPeriodFinish(uint256 _periodFinish) external onlyOwner {
+        require(
+            _periodFinish > block.timestamp ,
+            "Previous yeld period must be complete before changing the duration for the new period"
+        );
+        periodFinish = _periodFinish;
+        emit PeriodFinishedUpdated(_periodFinish);
+    }*/
 
     function setYeldDuration(uint256 _yeldDuration) external onlyOwner {
         require(
