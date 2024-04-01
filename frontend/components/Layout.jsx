@@ -1,6 +1,7 @@
 "use client"
 import Header from './Header'
 import Footer from './Footer'
+import HeaderMenu from './Menu.jsx'
 import { Flex } from '@chakra-ui/react'
 
 const Layout = ({ children }) => {
@@ -11,6 +12,7 @@ const Layout = ({ children }) => {
       justifyContent="center"
     >
         <Header />
+        <HeaderMenu />
 
             {children}
 
