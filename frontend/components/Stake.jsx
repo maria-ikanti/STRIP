@@ -21,12 +21,30 @@ const Stake = () => {
   const { address } = useAccount();
   //alert (connectedUserAddress);
 
+  const [owner, setOwner] = useState([]);
+
   const toast = useToast();
 
   // Un state pour stocker l'adresse du user à minter
   const [addressToMint, setAddressToMint] = useState('');
   // Un State pour stocker le nombre de l'input
   const [tokenAmount, setTokenAmount] = useState('');
+
+  // gets the owner
+    const { data : contractOwner, isLoading : ownerLoading, refetch : refetchOwner } = useReadContract({
+        address : stakingContractAddress,
+        abi : stakingContractAbi,
+        functionName : 'owner',
+        account : address
+        })
+
+    useEffect(() => {
+        if(contractOwner) {
+            setOwner(contractOwner);
+            console.log(contractOwner);
+            console.log(owner);
+        }
+        }, [contractOwner])
 
   const { data: balanceGet, error: balanceError, isPending: balancePending, refetch: balanceRefetch } = useReadContract({
     // adresse du contrat
@@ -121,7 +139,13 @@ const Stake = () => {
   }, [isSuccess, errorConfirmation])*/
     
   return (
-    <>
+    <>  
+    {contractOwner == address ? (
+                <Text>This is the owner</Text>
+            ) : (
+                <Text>This is NOT the owner</Text>
+            )}
+
       <Heading as='h2' size='xl' ml='5rem'>
                     Stake your STRU
       </Heading>

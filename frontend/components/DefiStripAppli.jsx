@@ -28,10 +28,30 @@ const DefiStripAppli = () => {
   // On récupère l'adresse connectée à la DApp
   const { address } = useAccount();
 
+  const [owner, setOwner] = useState([]);
+
   // Un State pour stocker le nombre de l'input
   const [stakeAmount, setStakeAmount] = useState(null);
   // Un State pour stocker les events
   const [events, setEvents] = useState([])
+  
+
+// gets the owner
+const { data : contractOwner, isLoading : ownerLoading, refetch : refetchOwner } = useReadContract({
+    address : stakingContractAddress,
+    abi : stakingContractAbi,
+    functionName : 'owner',
+    account : address
+    })
+
+useEffect(() => {
+    if(contractOwner) {
+        setOwner(contractOwner);
+        console.log(address);
+        console.log(owner);
+    }
+    }, [contractOwner])
+
 
   // Permet d'afficher des toasts (voir chakraUI)
   const toast = useToast();
@@ -129,8 +149,6 @@ const DefiStripAppli = () => {
         }) 
     }
 
-
-
     // Equivalent de transaction.wait() en ethersjs, on récupère si la transaction est en train d'être intégré dans un bloc (isConfirming) et si ça a marché au final (isConfirmed), il faut passer en paramètre le hash de la transaction (voir ci-dessus)
     const { isLoading: isConfirming, isSuccess, error: errorConfirmation } = 
     useWaitForTransactionReceipt({ 
@@ -197,6 +215,10 @@ const DefiStripAppli = () => {
 
   return (
     <>
+
+        if(address== owner){
+            <Text>This is the owner</Text>
+        }
       <Flex direction="column"width="100%">
         <Heading as='h4' size='md' mb="1rem">
             Total STRU supply

@@ -3,7 +3,7 @@ const hre = require("hardhat");
 
 async function main() {
 
-  const Stru = await hre.ethers.deployContract("Stru");
+  const Stru = await hre.ethers.deployContract("STRU");
   
   const stru = await Stru.waitForDeployment();
   //stru.getAddress();

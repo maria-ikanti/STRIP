@@ -5,6 +5,7 @@ const Footer = () => {
   return (
     <Flex
         p="2rem"
+        mt="10"
         justifyContent="center"
         alignItems="center"
     >

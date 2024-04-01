@@ -13,6 +13,16 @@ export const stakingContractAbi=[
         "internalType": "address",
         "name": "_outToken",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_yeldRate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_yeldDuration",
+        "type": "uint256"
       }
     ],
     "stateMutability": "nonpayable",
@@ -87,6 +97,25 @@ export const stakingContractAbi=[
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "Exit",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "address",
         "name": "previousOwner",
@@ -146,19 +175,6 @@ export const stakingContractAbi=[
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "reward",
-        "type": "uint256"
-      }
-    ],
-    "name": "YeldAdded",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
         "name": "newDuration",
         "type": "uint256"
       }
@@ -206,7 +222,7 @@ export const stakingContractAbi=[
   },
   {
     "inputs": [],
-    "name": "exit",
+    "name": "claimYeld",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -219,7 +235,7 @@ export const stakingContractAbi=[
         "type": "address"
       }
     ],
-    "name": "gain",
+    "name": "earned",
     "outputs": [
       {
         "internalType": "uint256",
@@ -232,7 +248,7 @@ export const stakingContractAbi=[
   },
   {
     "inputs": [],
-    "name": "getYeld",
+    "name": "exit",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -290,19 +306,6 @@ export const stakingContractAbi=[
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_yeld",
-        "type": "uint256"
-      }
-    ],
-    "name": "notifyYeldAmount",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "outToken",
     "outputs": [
@@ -344,24 +347,6 @@ export const stakingContractAbi=[
   {
     "inputs": [],
     "name": "renounceOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_address",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "sendInitialAmount",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -623,6 +608,47 @@ export const struTokenAbi=[
     "type": "error"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnableInvalidOwner",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "account",
+        "type": "address"
+      }
+    ],
+    "name": "OwnableUnauthorizedAccount",
+    "type": "error"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "receiver",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "Allowed",
+    "type": "event"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
@@ -645,6 +671,44 @@ export const struTokenAbi=[
       }
     ],
     "name": "Approval",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "receiver",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "Minted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
     "type": "event"
   },
   {
@@ -760,17 +824,17 @@ export const struTokenAbi=[
     "inputs": [
       {
         "internalType": "address",
-        "name": "owner",
+        "name": "_sender",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "recipient",
+        "name": "_recipient",
         "type": "address"
       },
       {
         "internalType": "uint256",
-        "name": "amount",
+        "name": "_amount",
         "type": "uint256"
       }
     ],
@@ -808,6 +872,26 @@ export const struTokenAbi=[
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -886,6 +970,19 @@ export const struTokenAbi=[
         "type": "bool"
       }
     ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },

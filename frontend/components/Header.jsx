@@ -9,7 +9,8 @@ const Header = () => {
           <Image src='logo.png' alt='Strip project' boxSize='150px' mb='2rem'/>
           <ConnectButton label="Sign in"/>
       </Flex>
-      
+
+
     </>
   )
 }
