@@ -5,7 +5,7 @@ import { struTokenAddress, struTokenAbi } from '@/constants'
 import { useReadContract, useAccount, useWriteContract, useWaitForTransactionReceipt} from 'wagmi';
 import {Box, useToast, Flex, Heading, Spinner, Text, Input, Button} from '@chakra-ui/react';
 import { isAddress } from "viem";
-import { GiMoneyStack } from "react-icons/gi"
+import { GiReceiveMoney } from "react-icons/gi"
 
 const Claim = () => {
 
@@ -84,7 +84,7 @@ const Claim = () => {
        </Box>
 
         <Flex mt="2rem" mb="2rem">
-            <Button w='15rem' leftIcon={<GiMoneyStack />} ml="1rem" mr="2rem" backgroundColor="#CBC49B" disabled={claimIsPending} onClick={claimYelds}>Claim</Button>
+            <Button w='15rem' leftIcon={<GiReceiveMoney />} ml="1rem" mr="2rem" backgroundColor="#CBC49B" disabled={claimIsPending} onClick={claimYelds}>Claim</Button>
         </Flex>
 
       

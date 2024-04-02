@@ -39,7 +39,7 @@ module.exports = {
       chainId: 31337,
     },
     hardhat: {
-      //blockGasLimit: 1000000000000000000,
+      blockGasLimit: 30000000,
     },
   },
   docgen: {

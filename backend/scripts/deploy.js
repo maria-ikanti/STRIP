@@ -42,6 +42,7 @@ async function main() {
   
 
   await stru.increaseAllow(testAddr, stAddr, 1000);
+  await stru.increaseAllow(stAddr, testAddr, 1000);
 
   const allowanceStr = await stru.allowance(testAddr, stAddr);
   
