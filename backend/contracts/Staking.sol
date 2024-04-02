@@ -166,7 +166,7 @@ contract Staking is ReentrancyGuard, Ownable {
         /**
     @notice the main staking function. Stakes the ERC20 token for a given address in the smart contact
     @param _amount the amount of the tokens to be staked
-     */
+    
     function stakeAndStrip(uint _amount, STRP _strpContact, STRY _stryContract) external nonReentrant {
         require(_amount > 0, "Amount to be staked must be > 0");
         _totalSupply = _totalSupply + _amount;
@@ -175,9 +175,9 @@ contract Staking is ReentrancyGuard, Ownable {
         yelds[msg.sender] = earned(msg.sender);
         strip(msg.sender, _amount, _strpContact, _stryContract);
         emit Staked(msg.sender, _amount);
-    }
+    } */
 
-    function strip(address _stakedTokenDepositor, uint _amount, STRP _strpContact, STRY _stryContract) internal nonReentrant {
+    /*function strip(address _stakedTokenDepositor, uint _amount, STRP _strpContact, STRY _stryContract) internal nonReentrant {
 
         //strpToken = IERC20(_strpToken);
         //stryToken = IERC20(_stryToken);
@@ -187,7 +187,7 @@ contract Staking is ReentrancyGuard, Ownable {
         console.log('strip _amount : ', _stakedTokenDepositor);
         console.log( 'strip : stryToken.balanceOf(_stakedTokenDepositor) ', stryToken.balanceOf(_stakedTokenDepositor));
         console.log('strip _amount : ', _stakedTokenDepositor);
-    }
+    }*/
 
     /**
     @notice Allows the user to withdraw the staked tokens

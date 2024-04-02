@@ -1,8 +1,8 @@
 // Dans ce fichier je viens récupérer les informations indispensables pour communiquer avec un contrat intelligent : l'adresse du contract et son abi.
-export const struTokenAddress="0x6C2d83262fF84cBaDb3e416D527403135D757892";
-export const strpTokenAddress="0xFD6F7A6a5c21A3f503EBaE7a473639974379c351";
-export const stryTokenAddress="0xa6e99A4ED7498b3cdDCBB61a6A607a4925Faa1B7";
-export const stakingContractAddress="0x5302E909d1e93e30F05B5D6Eea766363D14F9892";
+export const struTokenAddress="0xefAB0Beb0A557E452b398035eA964948c750b2Fd";
+export const strpTokenAddress="0xaca81583840B1bf2dDF6CDe824ada250C1936B4D";
+export const stryTokenAddress="0x70bDA08DBe07363968e9EE53d899dFE48560605B";
+export const stakingContractAddress="0x26B862f640357268Bd2d9E95bc81553a2Aa81D7E";
 export const stakingContractAbi=[
   {
     "inputs": [
@@ -1236,6 +1236,25 @@ export const strpTokenAbi=[
         "type": "uint256"
       }
     ],
+    "name": "Burned",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "receiver",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
     "name": "Minted",
     "type": "event"
   },
@@ -1352,6 +1371,24 @@ export const strpTokenAbi=[
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "burn",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -1534,8 +1571,6 @@ export const strpTokenAbi=[
   }
 ]
 
-
-
 export const stryTokenAbi=[
   {
     "inputs": [],
@@ -1710,6 +1745,25 @@ export const stryTokenAbi=[
         "type": "uint256"
       }
     ],
+    "name": "Burned",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "receiver",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
     "name": "Minted",
     "type": "event"
   },
@@ -1826,6 +1880,24 @@ export const stryTokenAbi=[
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_recipient",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "burn",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

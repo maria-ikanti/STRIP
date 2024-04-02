@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract STRP is ERC20, Ownable {
 
 	event Minted(address receiver, uint256 amount); 
+	event Burned(address receiver, uint256 amount);
 	event Allowed(address receiver, uint256 amount); 
 
     constructor() ERC20('STRP Principal token', 'STRP') Ownable(msg.sender){} 
@@ -21,6 +22,18 @@ contract STRP is ERC20, Ownable {
 		require(_amount>0, "You must enter a positif ammount");
 		_mint(_recipient, _amount);
 		emit Minted(_recipient, _amount);
+	}
+
+	/**
+	@notice Burn the amount for the given address
+	@param _recipient receiver address
+	@param _amount to be burned
+	 */
+	function burn(address _recipient, uint _amount) external {
+		require(_amount>0, "You must enter a positif ammount");
+		require(_amount<=balanceOf(_recipient), "You canno't burn more than you have.");
+		_burn(_recipient, _amount);
+		emit Burned(_recipient, _amount);
 	}
 
 	/**
