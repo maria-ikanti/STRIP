@@ -1,6 +1,6 @@
 // Dans ce fichier je viens récupérer les informations indispensables pour communiquer avec un contrat intelligent : l'adresse du contract et son abi.
-export const struTokenAddress="0x158d291D8b47F056751cfF47d1eEcd19FDF9B6f8";
-export const stakingContractAddress="0x2F54D1563963fC04770E85AF819c89Dc807f6a06";
+export const struTokenAddress="0x00CAC06Dd0BB4103f8b62D280fE9BCEE8f26fD59";
+export const stakingContractAddress="0x4951A1C579039EbfCBA0BE33D2cd3A6D30b0f802";
 export const stakingContractAbi=[
   {
     "inputs": [

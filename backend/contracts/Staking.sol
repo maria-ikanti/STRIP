@@ -66,7 +66,7 @@ contract Staking is ReentrancyGuard, Ownable {
         require (_account != address(0), "Must be a valid address");
         // Update the gains table for the given account
         yelds[_account] = earned(_account);
-        console.log('resetYreld : yelds[_account]',yelds[_account]);
+        console.log('resetYeld : yelds[_account]',yelds[_account]);
         // Update the payed yelds for the given user
         userYeldsPerTokenPaid[_account] = yeldsPerTokenStored;
         _;
@@ -80,8 +80,8 @@ contract Staking is ReentrancyGuard, Ownable {
         // Since the last time we made an update
         uint periodApplicable = lastTimeYeldApplicable() - lastUpdateTime;
         // The period per rate, devided by the total supply
-        console.log('lastTimeYeldApplicable()', lastTimeYeldApplicable());
-        console.log('lastUpdateTime', lastUpdateTime);
+        console.log('yeldPerToken: lastTimeYeldApplicable()', lastTimeYeldApplicable());
+        console.log('yeldPerToken : lastUpdateTime', lastUpdateTime);
         console.log('yeldPerToken : periodApplicable', periodApplicable);
         uint temp = periodApplicable*yeldRate/_totalSupply;
         console.log('yeldPerToken : _totalSupply', _totalSupply);
@@ -94,8 +94,8 @@ contract Staking is ReentrancyGuard, Ownable {
     @return uint256 period (datetime)
     */
     function lastTimeYeldApplicable() public view returns (uint256) {
-        console.log('block.timestamp', block.timestamp);
-        console.log('periodFinish', periodFinish);
+        console.log('lastTimeYeldApplicable: block.timestamp', block.timestamp);
+        console.log('lastTimeYeldApplicable: periodFinish', periodFinish);
         return block.timestamp < periodFinish ? block.timestamp : periodFinish;
     }
 
@@ -103,10 +103,10 @@ contract Staking is ReentrancyGuard, Ownable {
     @notice Returns the total earned by a given account 
      */
     function earned(address _account) public view returns (uint256) {
-        console.log('_balances[_account]', _balances[_account]);
-        console.log('yeldPerToken()', yeldPerToken());
-        console.log('userYeldsPerTokenPaid[_account]', userYeldsPerTokenPaid[_account]);
-        console.log('yelds[_account]', yelds[_account]);
+        console.log('earned: _balances[_account]', _balances[_account]);
+        console.log('earned: yeldPerToken()', yeldPerToken());
+        console.log('earned: userYeldsPerTokenPaid[_account]', userYeldsPerTokenPaid[_account]);
+        console.log('earned: yelds[_account]', yelds[_account]);
         uint256 earnedAmount = _balances[_account]*(yeldPerToken()-userYeldsPerTokenPaid[_account])/1e18 + yelds[_account];
         return earnedAmount;
     }
@@ -149,12 +149,13 @@ contract Staking is ReentrancyGuard, Ownable {
     @param _fromAddress the adress of the user that will stake his tokens
     @param _amount the amount of the tokens to be staked
      */
-    function stake(address _fromAddress, uint _amount) external nonReentrant{
+    function stake(address _fromAddress, uint _amount) external nonReentrant {
         require(_amount > 0, "Amount to be staked must be > 0");
         _totalSupply = _totalSupply + _amount;
         //vérifier
         _balances[_fromAddress] = _balances[_fromAddress] + _amount;
         stakingToken.safeTransferFrom(_fromAddress, address(this), _amount);
+         yelds[_fromAddress] = earned(_fromAddress);
         // strips the undelying token into 2 tokens
         // stripContract.strip(_address, _amount);
         emit Staked(_fromAddress, _amount);
