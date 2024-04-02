@@ -10,7 +10,16 @@ contract STRU is ERC20, Ownable {
 	event Minted(address receiver, uint256 amount); 
 	event Allowed(address receiver, uint256 amount); 
 
-    constructor() ERC20('Faucet STRU staked token', 'STRU') Ownable(msg.sender){} 
+	uint public price;
+	//uint decimals;
+	//uint mult_dec;
+	
+
+    constructor() ERC20('Faucet STRU staked token', 'STRU') Ownable(msg.sender){
+		/*price = 100000000000000000; //price in wei 1 Token = 0.1ETH
+        decimals = 18;
+        mult_dec = 10**decimals;*/
+	} 
  
 	/**
 	@notice Mint Faucet

@@ -122,24 +122,26 @@ contract Staking is ReentrancyGuard, Ownable {
     /**
     @notice
      */
-   /* function sendInitialAmount(address _address, uint _amount) external onlyOwner nonReentrant{
+    function sendInitialAmount(address _from, uint _amount) external onlyOwner nonReentrant{
         require(_amount > 0, "Amount to be initialized must be > 0");
-            inToken.safeTransfer(_address,_amount);
-    }*/
+            //inToken.safeTransfer(_address,_amount);
+            inToken.safeTransferFrom(_from, address(this), _amount);
+    }
 
     /**
     @notice the main staking function. Stakes the ERC20 token for a given address in the smart contact
-    @param _address the adress of the user that will stake his tokens
+    @param _fromAddress the adress of the user that will stake his tokens
     @param _amount the amount of the tokens to be staked
      */
-    function stake(address _address, uint _amount) external nonReentrant resetYeld(_address) {
+    function stake(address _fromAddress, uint _amount) external nonReentrant resetYeld(msg.sender){
         require(_amount > 0, "Amount to be staked must be > 0");
         _totalSupply = _totalSupply + _amount;
-        _balances[_address] = _balances[_address] + _amount;
-        outToken.safeTransferFrom(_address, address(this), _amount);
+        //vérifier
+        _balances[_fromAddress] = _balances[_fromAddress] + _amount;
+        inToken.safeTransferFrom(_fromAddress, address(this), _amount);
         // strips the undelying token into 2 tokens
         // stripContract.strip(_address, _amount);
-        emit Staked(_address, _amount);
+        emit Staked(_fromAddress, _amount);
     }
 
     /**

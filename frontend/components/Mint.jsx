@@ -1,13 +1,12 @@
 'use client'
 
 import { useEffect, useState } from 'react'; 
-// On importe les données du contrat
-import { stakingContractAddress, stakingContractAbi } from '@/constants';
+// On importe les données de contrats
 import { struTokenAddress, struTokenAbi } from '@/constants'
-import { useReadContract, useAccount, useWriteContract, useWaitForTransactionReceipt, useWatchContractEvent } from 'wagmi';
-import {Alert, AlertIcon, Box, useToast, Flex, Heading, Spinner, Text, Input, Button} from '@chakra-ui/react';
+import { useReadContract, useAccount, useWriteContract, useWaitForTransactionReceipt} from 'wagmi';
+import {Box, useToast, Flex, Heading, Spinner, Text, Input, Button} from '@chakra-ui/react';
 import { isAddress } from "viem";
-import { MdBuild , MdCall } from "react-icons/md"
+import { MdBuild } from "react-icons/md"
 
 // Permet de parser l'event
 import { parseAbiItem } from 'viem';

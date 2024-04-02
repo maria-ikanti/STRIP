@@ -44,7 +44,7 @@ export default function mint() {
       ):
         (
         <Heading as='h2' size='xl' ml='20rem' mt='5rem' width="100%">
-            You're not the owner and you cannot mint.
+            You're not the owner and you cannot mint. {contractOwner}
         </Heading>
         )
         ) : (

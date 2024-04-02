@@ -17,7 +17,7 @@ async function main() {
   const staking = await hre.ethers.deployContract("Staking", [inAddr, outAddr, 3, 2]);
 
   await staking.waitForDeployment();
-  //const stAddr = staking.target;
+  const stAddr = staking.target;
 
   console.log(
     `Staking deployed to ${staking.target}`
@@ -29,22 +29,30 @@ async function main() {
     `getYeldForDuration is  ${yeldForDuration.toString()}`
   );
   
- /*const testAddr = "0xBcd4042DE499D14e55001CcbB24a551F3b954096";
+  const testAddr = "0xBcd4042DE499D14e55001CcbB24a551F3b954096";
   await stru.mint(testAddr,1000);
 
   const balanceStr = await stru.balanceOf(testAddr);
 
+
   console.log(
     `Balance of  ${testAddr} is ${balanceStr.toString()}`
-  );*/
+  );
+  
 
- 
-  /*await staking.sendInitialAmount(testAddr,500);
-  const balanceTest = await stru.balanceOf(testAddr);
-  //await stru.increaseAllow(testAddr, stAddr, 400);
+  await stru.increaseAllow(testAddr, stAddr, 1000);
+
+  const allowanceStr = await stru.allowance(testAddr, stAddr);
+  
+  console.log(
+    `Allowance of  ${stAddr} for the token ${stru} is ${allowanceStr.toString()}`
+  );
+  //await staking.sendInitialAmount(testAddr,50);
+  
   //await staking.stake(testAddr, 200);
-  const yeldPerToken = await staking.yeldPerToken();
-  const totalSupply = await staking.totalSupply();
+  const balanceTest = await stru.balanceOf(testAddr);
+  //const yeldPerToken = await staking.yeldPerToken();
+  //const totalSupply = await staking.totalSupply();
   //await staking.setYeldDuration(500);
   
 
@@ -58,7 +66,7 @@ async function main() {
     `Balance of  ${stAddr} is ${newBalanceStr.toString()}`
   );
 
-  console.log(
+  /*console.log(
     `yeldPerToken  is ${yeldPerToken}`
   );
 

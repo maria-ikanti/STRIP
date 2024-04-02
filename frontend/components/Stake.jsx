@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'; 
-// On importe les données du contrat
+// On importe les données de contrats
 import { stakingContractAddress, stakingContractAbi } from '@/constants';
 import { struTokenAddress, struTokenAbi } from '@/constants'
 import { useReadContract, useAccount, useWriteContract, useWaitForTransactionReceipt, useWatchContractEvent } from 'wagmi';
@@ -26,7 +26,7 @@ const Stake = () => {
   const toast = useToast();
 
   // Un state pour stocker l'adresse du user à minter
-  const [addressToMint, setAddressToMint] = useState('');
+  const [addressToStake, setAddressToStake] = useState('');
   // Un State pour stocker le nombre de l'input
   const [tokenAmount, setTokenAmount] = useState('');
 
@@ -56,27 +56,39 @@ const Stake = () => {
     //arguments
     args : [address],
     // qui appelle la fonction ?
-    account: struTokenAddress
+    account: address
   });
 
-  const { data: hash, error: mintError, isPending: mintIsPending, writeContract } = useWriteContract({
+  const { data: contractBalanceGet, error: contractBlanceError, isPending: contractBalancePending, refetch: contractBalanceRefetch } = useReadContract({
+    // adresse du contrat
+    address: struTokenAddress,
+    // abi du contrat
+    abi: struTokenAbi,
+    // nom de la fonction dans le smart contract
+    functionName: 'balanceOf',
+    //arguments
+    args : [stakingContractAddress],
+    // qui appelle la fonction ?
+    account: address
+  });
+
+  const { data: hash, error: stakeError, isPending: stakeIsPending, writeContract } = useWriteContract({
     mutation: {
         // Si ça a marché d'écrire dans le contrat
         onSuccess: () => {
             toast({
-                title: 'The mint has ended successfuly',
+                title: 'The stake has ended successfuly',
                 status: "success",
                 duration: 6000,
                 isClosable: true,
             });
           //refetchEverything();
-          setAddressToMint('');
           setTokenAmount('');
         },
         // Si erreur
         onError: (mintError) => {
             toast({
-                title: mintError.shortMessage,
+                title: stakeError.shortMessage,
                 status: "error",
                 duration: 3000,
                 isClosable: true,
@@ -96,10 +108,10 @@ const Stake = () => {
                 });
             }else{
                 writeContract({
-                    address: struTokenAddress,
-                    abi: struTokenAbi,
+                    address: stakingContractAddress,
+                    abi: stakingContractAbi,
                     functionName: 'stake',
-                    args: [addressToMint, tokenAmount],
+                    args: [address, tokenAmount],
                     account: address
                 })
             }
@@ -124,43 +136,45 @@ const Stake = () => {
       //await getEvents();
   }
 
- /* useEffect(() => {
+  useEffect(() => {
       if(isSuccess) {
           toast({
-              title: "The mint has ended with success",
+              title: "The stake has ended with success",
               status: "success",
               duration: 3000,
               isClosable: true,
           });
          // refetchEverything();
-          setAddressToMint('');
           setTokenAmount('');
       }
-  }, [isSuccess, errorConfirmation])*/
+  }, [isSuccess, errorConfirmation])
     
   return (
     <>  
-    {contractOwner == address ? (
-                <Text>This is the owner</Text>
-            ) : (
-                <Text>This is NOT the owner</Text>
-            )}
 
-      <Heading as='h2' size='xl' ml='5rem'>
+      <Heading as='h2' size='xl' ml='5rem' mt="3rem" mb="3rem">
                     Stake your STRU
       </Heading>
-      <Box p="2rem">
+      <Box ml="2rem">
             {/* Est ce qu'on est en train de récupérer la balance en STRU ? */}
             {balancePending ? (
                 <Spinner />
             ) : (
-                <Text>Your current STRU balance is: {balanceGet?.toString()}</Text>
+                <Text color='tomato'>Your current STRU balance is: {balanceGet?.toString()}</Text>
+            )}
+       </Box>
+       <Box ml="2rem">
+            {/* Est ce qu'on est en train de récupérer la balance du contrat en STRU ? */}
+            {contractBalancePending ? (
+                <Spinner />
+            ) : (
+                <Text color="orange">Your current staken STRU amount is: {contractBalanceGet?.toString()}</Text>
             )}
        </Box>
 
         <Flex mt="2rem" mb="2rem">
             <Input id='amnt' w='20rem' backgroundColor="#CBC49B" placeholder='Amount to stake' ml="1rem"  value={tokenAmount} onChange={(e) => setTokenAmount(e.target.value)} />
-            <Button w='15rem' leftIcon={<FaPiggyBank />} ml="1rem" mr="2rem" backgroundColor="#CBC49B" disabled={mintIsPending} onClick={stakeSTRU}>Stake</Button>
+            <Button w='15rem' leftIcon={<FaPiggyBank />} ml="1rem" mr="2rem" backgroundColor="#CBC49B" disabled={stakeIsPending} onClick={stakeSTRU}>Stake</Button>
         </Flex>
 
       
