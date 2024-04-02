@@ -163,6 +163,32 @@ contract Staking is ReentrancyGuard, Ownable {
         emit Staked(msg.sender, _amount);
     }
 
+        /**
+    @notice the main staking function. Stakes the ERC20 token for a given address in the smart contact
+    @param _amount the amount of the tokens to be staked
+     */
+    function stakeAndStrip(uint _amount, STRP _strpContact, STRY _stryContract) external nonReentrant {
+        require(_amount > 0, "Amount to be staked must be > 0");
+        _totalSupply = _totalSupply + _amount;
+        _balances[msg.sender] = _balances[msg.sender] + _amount;
+        stakingToken.safeTransferFrom(msg.sender, address(this), _amount);
+        yelds[msg.sender] = earned(msg.sender);
+        strip(msg.sender, _amount, _strpContact, _stryContract);
+        emit Staked(msg.sender, _amount);
+    }
+
+    function strip(address _stakedTokenDepositor, uint _amount, STRP _strpContact, STRY _stryContract) internal nonReentrant {
+
+        //strpToken = IERC20(_strpToken);
+        //stryToken = IERC20(_stryToken);
+        _strpContact.mint(_stakedTokenDepositor, _amount);
+        _stryContract.mint(_stakedTokenDepositor, _amount);
+        console.log('strip _stakedTokenDepositor : ', _stakedTokenDepositor);
+        console.log('strip _amount : ', _stakedTokenDepositor);
+        console.log( 'strip : stryToken.balanceOf(_stakedTokenDepositor) ', stryToken.balanceOf(_stakedTokenDepositor));
+        console.log('strip _amount : ', _stakedTokenDepositor);
+    }
+
     /**
     @notice Allows the user to withdraw the staked tokens
     @param _amount the amount to be withdrawn

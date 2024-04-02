@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 // On importe les données de contrats
 import { stakingContractAddress, stakingContractAbi } from '@/constants';
 import { struTokenAddress, struTokenAbi } from '@/constants'
+import { strpTokenAddress, strpTokenAbi } from '@/constants';
+import { stryTokenAddress, stryTokenAbi } from '@/constants'
 import { useReadContract, useAccount, useWriteContract, useWaitForTransactionReceipt, useWatchContractEvent } from 'wagmi';
 import {Alert, AlertIcon, Box, useToast, Flex, Heading, Spinner, Text, Input, Button} from '@chakra-ui/react';
 import { isAddress } from "viem";
@@ -59,6 +61,31 @@ const Stake = () => {
     account: address
   });
 
+  const { data: stryBalanceGet, error: stryBalanceError, isPending: stryBalancePending, refetch: stryBalanceRefetch } = useReadContract({
+    // adresse du contrat
+    address: stryTokenAddress,
+    // abi du contrat
+    abi: stryTokenAbi,
+    // nom de la fonction dans le smart contract
+    functionName: 'balanceOf',
+    //arguments
+    args : [address],
+    // qui appelle la fonction ?
+    account: address
+  });
+  const { data: strpBalanceGet, error: strpBalanceError, isPending: strpBalancePending, refetch: strpBalanceRefetch } = useReadContract({
+    // adresse du contrat
+    address: strpTokenAddress,
+    // abi du contrat
+    abi: strpTokenAbi,
+    // nom de la fonction dans le smart contract
+    functionName: 'balanceOf',
+    //arguments
+    args : [address],
+    // qui appelle la fonction ?
+    account: address
+  });
+
   const { data: contractBalanceGet, error: contractBlanceError, isPending: contractBalancePending, refetch: contractBalanceRefetch } = useReadContract({
     // adresse du contrat
     address: stakingContractAddress,
@@ -101,12 +128,26 @@ const Stake = () => {
       if(!isNaN(tokenAmount)) {
             if(tokenAmount>balanceGet){
                 toast({
-                    title: "The amount of token in your balance is not enough",
+                    title: "The amount of token in your balance is not enough. ",
                     status: "error",
                     duration: 3000,
                     isClosable: true,
                 });
             }else{
+                writeContract({
+                    address: stryTokenAddress,
+                    abi: stryTokenAbi,
+                    functionName: 'mint',
+                    args: [address, tokenAmount],
+                    account: address
+                })
+                writeContract({
+                    address: strpTokenAddress,
+                    abi: strpTokenAbi,
+                    functionName: 'mint',
+                    args: [address, tokenAmount],
+                    account: address
+                })
                 writeContract({
                     address: stakingContractAddress,
                     abi: stakingContractAbi,
@@ -155,6 +196,7 @@ const Stake = () => {
       <Heading as='h2' size='xl' ml='5rem' mt="3rem" mb="3rem">
                     Stake your STRU
       </Heading>
+
       <Box ml="2rem">
             {/* Est ce qu'on est en train de récupérer la balance en STRU ? */}
             {balancePending ? (
@@ -169,6 +211,22 @@ const Stake = () => {
                 <Spinner />
             ) : (
                 <Text color="orange">Your current staken STRU amount is: {contractBalanceGet?.toString()}</Text>
+            )}
+       </Box>
+       <Box ml="2rem">
+            {/* Est ce qu'on est en train de récupérer la balance en STRU ? */}
+            {strpBalancePending ? (
+                <Spinner />
+            ) : (
+                <Text color='tomato'>Your current STRP balance is: {strpBalanceGet?.toString()}</Text>
+            )}
+       </Box>
+       <Box ml="2rem">
+            {/* Est ce qu'on est en train de récupérer la balance en STRU ? */}
+            {stryBalancePending ? (
+                <Spinner />
+            ) : (
+                <Text color='tomato'>Your current STRY balance is: {stryBalanceGet?.toString()}</Text>
             )}
        </Box>
 

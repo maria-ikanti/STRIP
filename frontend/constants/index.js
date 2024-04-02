@@ -1,8 +1,8 @@
 // Dans ce fichier je viens récupérer les informations indispensables pour communiquer avec un contrat intelligent : l'adresse du contract et son abi.
-export const struTokenAddress="0xc96304e3c037f81dA488ed9dEa1D8F2a48278a75";
-export const strpTokenAddress="0x3aAde2dCD2Df6a8cAc689EE797591b2913658659";
-export const stryTokenAddress="0xab16A69A5a8c12C732e0DEFF4BE56A70bb64c926";
-export const stakingContractAddress="0x34B40BA116d5Dec75548a9e9A8f15411461E8c70";
+export const struTokenAddress="0x6C2d83262fF84cBaDb3e416D527403135D757892";
+export const strpTokenAddress="0xFD6F7A6a5c21A3f503EBaE7a473639974379c351";
+export const stryTokenAddress="0xa6e99A4ED7498b3cdDCBB61a6A607a4925Faa1B7";
+export const stakingContractAddress="0x5302E909d1e93e30F05B5D6Eea766363D14F9892";
 export const stakingContractAbi=[
   {
     "inputs": [
@@ -14,6 +14,16 @@ export const stakingContractAbi=[
       {
         "internalType": "address",
         "name": "_stakingToken",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_strpToken",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_stryToken",
         "type": "address"
       }
     ],
@@ -370,8 +380,57 @@ export const stakingContractAbi=[
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "contract STRP",
+        "name": "_strpContact",
+        "type": "address"
+      },
+      {
+        "internalType": "contract STRY",
+        "name": "_stryContract",
+        "type": "address"
+      }
+    ],
+    "name": "stakeAndStrip",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "stakingToken",
+    "outputs": [
+      {
+        "internalType": "contract IERC20",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "strpToken",
+    "outputs": [
+      {
+        "internalType": "contract IERC20",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "stryToken",
     "outputs": [
       {
         "internalType": "contract IERC20",

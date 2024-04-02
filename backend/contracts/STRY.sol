@@ -17,7 +17,7 @@ contract STRY is ERC20, Ownable {
 	@param _recipient receiver address
 	@param _amount to be minted
 	 */
-	function mint(address _recipient, uint _amount) external onlyOwner{
+	function mint(address _recipient, uint _amount) external {
 		require(_amount>0, "You must enter a positif ammount");
 		_mint(_recipient, _amount);
 		emit Minted(_recipient, _amount);
