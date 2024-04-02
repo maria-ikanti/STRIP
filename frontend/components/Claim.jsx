@@ -44,8 +44,8 @@ const Claim = () => {
                     isClosable: true,
                 });
               //refetchEverything();
-              setAddressToMint('');
-              setTokenAmount('');
+              //setAddressToMint('');
+              // setTokenAmount('');
             },
             // Si erreur
             onError: (mintError) => {
@@ -71,11 +71,11 @@ const Claim = () => {
 
   return (
     <>
-      <Heading as='h2' size='xl' ml='5rem'>
+      <Heading as='h2' size='xl' ml='5rem' mt="3rem" mb="3rem">
                    Claim your rewards
       </Heading>
       <Box p="2rem">
-            {/* Est ce qu'on est en train de récupérer la balance en STRU ? */}
+            {/* Est ce qu'on est en train de récupérer le earned ? */}
             {earnedPending ? (
                 <Spinner />
             ) : (

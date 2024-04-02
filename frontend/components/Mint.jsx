@@ -114,7 +114,7 @@ const Mint = () => {
     
   return (
     <>
-      <Heading as='h2' size='xl' ml='5rem'>
+      <Heading as='h2' size='xl' ml='5rem' mt="3rem" mb="3rem">
                     Mint STRU
       </Heading>
       <Box p="2rem">

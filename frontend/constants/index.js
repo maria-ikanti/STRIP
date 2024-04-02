@@ -1,28 +1,18 @@
 // Dans ce fichier je viens récupérer les informations indispensables pour communiquer avec un contrat intelligent : l'adresse du contract et son abi.
-export const struTokenAddress="0x34B40BA116d5Dec75548a9e9A8f15411461E8c70";
-export const stakingContractAddress="0xD0141E899a65C95a556fE2B27e5982A6DE7fDD7A";
+export const struTokenAddress="0x158d291D8b47F056751cfF47d1eEcd19FDF9B6f8";
+export const stakingContractAddress="0x2F54D1563963fC04770E85AF819c89Dc807f6a06";
 export const stakingContractAbi=[
   {
     "inputs": [
       {
         "internalType": "address",
-        "name": "_inToken",
+        "name": "_yeldsToken",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "_outToken",
+        "name": "_stakingToken",
         "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_yeldRate",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_yeldDuration",
-        "type": "uint256"
       }
     ],
     "stateMutability": "nonpayable",
@@ -175,6 +165,19 @@ export const stakingContractAbi=[
       {
         "indexed": false,
         "internalType": "uint256",
+        "name": "reward",
+        "type": "uint256"
+      }
+    ],
+    "name": "YeldAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
         "name": "newDuration",
         "type": "uint256"
       }
@@ -268,19 +271,6 @@ export const stakingContractAbi=[
   },
   {
     "inputs": [],
-    "name": "inToken",
-    "outputs": [
-      {
-        "internalType": "contract IERC20",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "lastTimeYeldApplicable",
     "outputs": [
       {
@@ -306,16 +296,16 @@ export const stakingContractAbi=[
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "outToken",
-    "outputs": [
+    "inputs": [
       {
-        "internalType": "contract IERC20",
-        "name": "",
-        "type": "address"
+        "internalType": "uint256",
+        "name": "_yeld",
+        "type": "uint256"
       }
     ],
-    "stateMutability": "view",
+    "name": "notifyYeldAmount",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -368,7 +358,7 @@ export const stakingContractAbi=[
     "inputs": [
       {
         "internalType": "address",
-        "name": "_address",
+        "name": "_fromAddress",
         "type": "address"
       },
       {
@@ -380,6 +370,19 @@ export const stakingContractAbi=[
     "name": "stake",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "stakingToken",
+    "outputs": [
+      {
+        "internalType": "contract IERC20",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -510,9 +513,21 @@ export const stakingContractAbi=[
     ],
     "stateMutability": "view",
     "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "yeldsToken",
+    "outputs": [
+      {
+        "internalType": "contract IERC20",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
   }
 ]
-
 
 
 export const struTokenAbi=[
