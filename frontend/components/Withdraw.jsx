@@ -38,20 +38,20 @@ const Withdraw = () => {
     //arguments
     args : [address],
     // qui appelle la fonction ?
-    account: struTokenAddress
+    account: address
   });
 
-  const { data: yeldsGet, error: yeldsError, isPending: yeldsPending, refetch: yeldsRefetch } = useReadContract({
+  const { data: contractBalanceGet, error: contractBlanceError, isPending: contractBalancePending, refetch: contractBalanceRefetch } = useReadContract({
     // adresse du contrat
     address: stakingContractAddress,
     // abi du contrat
     abi: stakingContractAbi,
     // nom de la fonction dans le smart contract
-    functionName: 'yelds',
+    functionName: 'balanceOf',
     //arguments
     args : [address],
     // qui appelle la fonction ?
-    account: struTokenAddress
+    account: address
   });
 
   const { data: hash, error: withdrawError, isPending: withdrawIsPending, writeContract } = useWriteContract({
@@ -134,16 +134,16 @@ const Withdraw = () => {
             {balancePending ? (
                 <Spinner />
             ) : (
-                <Text color="tomato">Your current STRU balance is {balanceGet?.toString()}</Text>
+                <Text color="tomato">Your current STRU balance is : {balanceGet?.toString()}</Text>
             )}
        </Box>
 
        <Box p="2rem">
             {/* Est ce qu'on est en train de récupérer les yelds en STRU ? */}
-            {yeldsPending ? (
+            {contractBalancePending ? (
                 <Spinner />
             ) : (
-                <Text color="orange">Your yelds STRU amount is {yeldsGet?.toString()}</Text>
+                <Text color="orange">Your staked STRU tokens amount is : {contractBalanceGet?.toString()}</Text>
             )}
        </Box>
 
