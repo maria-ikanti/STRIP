@@ -6,15 +6,34 @@ async function main() {
   const Stru = await hre.ethers.deployContract("STRU");
   
   const stru = await Stru.waitForDeployment();
-  //stru.getAddress();
-  console.log(
-    `Stru deployed to ${Stru.target}`
-  );
+
+  const Strp = await hre.ethers.deployContract("STRP");
+  
+  const strup = await Strp.waitForDeployment();
+
+  const Stry = await hre.ethers.deployContract("STRY");
+  
+  const stry = await Stry.waitForDeployment();
 
   const yeldsTokenAddr = Stru.target;
   const stakingTokenAddr = Stru.target;
+  const strpTokenAddr = Strp.target;
+  const stryTokenAddr = Stry.target;
 
-  const staking = await hre.ethers.deployContract("Staking", [yeldsTokenAddr, stakingTokenAddr]);
+  console.log(
+    `STRU deployed to ${stakingTokenAddr}`
+  );
+
+  console.log(
+    `STRP deployed to ${strpTokenAddr}`
+  );
+
+  console.log(
+    `STRY deployed to ${stryTokenAddr}`
+  );
+
+
+  const staking = await hre.ethers.deployContract("Staking", [yeldsTokenAddr, stakingTokenAddr, strpTokenAddr, stryTokenAddr]);
 
   await staking.waitForDeployment();
   const stAddr = staking.target;
@@ -60,7 +79,7 @@ async function main() {
   //await staking.setYeldDuration(500);
   
 
-  console.log(
+  /*console.log(
     `Balance of  ${testAddr} is ${balanceTest.toString()}`
   );
 

@@ -17,7 +17,7 @@ event Staked(address indexed user, uint256 amount);
 event Withdrawn(address indexed user, uint256 amount);
 event YeldPaid(address indexed user, uint256 reward);
 event YeldDurationUpdated(uint256 newDuration);
-event PeriodFinishedUpdated(uint256 newPeriodFinished);
+//event PeriodFinishedUpdated(uint256 newPeriodFinished);
 event Recovered(address token, uint256 amount);
 event Exit(address sender, uint256 amount);
 
@@ -29,6 +29,8 @@ contract Staking is ReentrancyGuard, Ownable {
 
     IERC20 public yeldsToken;
     IERC20 public stakingToken;
+    IERC20 public strpToken;
+    IERC20 public stryToken;
     //Strip public stripContract;
     uint256 public periodFinish; // maturity
     uint256 public yeldRate;
@@ -47,9 +49,11 @@ contract Staking is ReentrancyGuard, Ownable {
     // Total deposited amount by account
     mapping(address => uint) private _balances;
 
-    constructor(address _yeldsToken, address _stakingToken) Ownable(msg.sender) {
+    constructor(address _yeldsToken, address _stakingToken, address _strpToken, address _stryToken) Ownable(msg.sender) {
         yeldsToken = IERC20(_yeldsToken);
         stakingToken = IERC20(_stakingToken);
+        strpToken = IERC20(_strpToken);
+        stryToken = IERC20(_stryToken);
         //, uint256 _yeldRate, uint256 _yeldDuration
        // yeldRate = _yeldRate;
        // yeldDuration= _yeldDuration;
@@ -137,12 +141,7 @@ contract Staking is ReentrancyGuard, Ownable {
 
     /**
     @notice
-     
-    function sendInitialAmount(address _from, uint _amount) external onlyOwner nonReentrant{
-        require(_amount > 0, "Amount to be initialized must be > 0");
-            //inToken.safeTransfer(_address,_amount);
-            yeldsToken.safeTransferFrom(_from, address(this), _amount);
-    }*/
+
 
     /**
     @notice the main staking function. Stakes the ERC20 token for a given address in the smart contact
@@ -152,12 +151,12 @@ contract Staking is ReentrancyGuard, Ownable {
         require(_amount > 0, "Amount to be staked must be > 0");
         _totalSupply = _totalSupply + _amount;
         //vérifier
-        console.log('avant staking _balances of : ', address(this),' is ', _balances[address(this)]);
-        console.log('avant staking _balances of : ', msg.sender,' is ', _balances[msg.sender]);
+        //console.log('avant staking _balances of : ', address(this),' is ', _balances[address(this)]);
+        //console.log('avant staking _balances of : ', msg.sender,' is ', _balances[msg.sender]);
         _balances[msg.sender] = _balances[msg.sender] + _amount;
         stakingToken.safeTransferFrom(msg.sender, address(this), _amount);
-        console.log('apres staking _balances of : ', address(this),' is ', _balances[address(this)]);
-        console.log('apres staking _balances of : ', msg.sender,' is ', _balances[msg.sender]);
+        //console.log('apres staking _balances of : ', address(this),' is ', _balances[address(this)]);
+        //console.log('apres staking _balances of : ', msg.sender,' is ', _balances[msg.sender]);
         yelds[msg.sender] = earned(msg.sender);
         // strips the undelying token into 2 tokens
         // stripContract.strip(_address, _amount);
@@ -173,14 +172,14 @@ contract Staking is ReentrancyGuard, Ownable {
         uint256 tempBalance = _balances[msg.sender];
         require (_amount <= tempBalance, "You don't have enough tokens");
         _totalSupply = _totalSupply - _amount;
-        console.log('avant withdraw _balances of : ', address(this),' is ', _balances[address(this)]);
-        console.log('avant withdraw _balances of : ', msg.sender,' is ', _balances[msg.sender]);
+        //console.log('avant withdraw _balances of : ', address(this),' is ', _balances[address(this)]);
+        //console.log('avant withdraw _balances of : ', msg.sender,' is ', _balances[msg.sender]);
         _balances[msg.sender] = _balances[msg.sender] - _amount ;
-        console.log('apres withdraw _balances of : ', address(this),' is ', _balances[address(this)]);
-        console.log('apres withdraw _balances of : ', msg.sender,' is ', _balances[msg.sender]);
+        //console.log('apres withdraw _balances of : ', address(this),' is ', _balances[address(this)]);
+        //console.log('apres withdraw _balances of : ', msg.sender,' is ', _balances[msg.sender]);
         stakingToken.safeTransfer(msg.sender, _amount);
         //stakingToken.safeTransferFrom(address(this), msg.sender, _amount);
-        console.log('apres safe transfer');
+        //console.log('apres safe transfer');
         emit Withdrawn(msg.sender, _amount);
     }
 
