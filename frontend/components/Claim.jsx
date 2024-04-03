@@ -1,24 +1,23 @@
+'use client'
+
 import { useEffect, useState } from 'react'; 
 // On importe les données de contrats
 import { stakingContractAddress, stakingContractAbi } from '@/constants';
-import { struTokenAddress, struTokenAbi } from '@/constants'
 import { useReadContract, useAccount, useWriteContract, useWaitForTransactionReceipt} from 'wagmi';
 import {Box, useToast, Flex, Heading, Spinner, Text, Input, Button} from '@chakra-ui/react';
-import { isAddress } from "viem";
 import { GiReceiveMoney } from "react-icons/gi"
 
 const Claim = () => {
 
     // On récupère l'adresse connectée à la DApp
     const { address } = useAccount();
-    //alert (connectedUserAddress);
 
     const toast = useToast();
 
-    // Un state pour stocker l'adresse du user à minter
-    const [addressToMint, setAddressToMint] = useState('');
+    // Un state pour stocker l'adresse du user qui claim
+    //const [addressClaiming, setAddressClaiming] = useState('');
     // Un State pour stocker le nombre de l'input
-    const [tokenAmount, setTokenAmount] = useState('');
+    //const [tokenAmount, setTokenAmount] = useState('');
 
     const { data: earnedGet, error: earnedError, isPending: earnedPending, refetch: earnedRefetch } = useReadContract({
         // adresse du contrat
@@ -48,9 +47,9 @@ const Claim = () => {
               // setTokenAmount('');
             },
             // Si erreur
-            onError: (mintError) => {
+            onError: (claimError) => {
                 toast({
-                    title: mintError.shortMessage,
+                    title: claimError.shortMessage,
                     status: "error",
                     duration: 3000,
                     isClosable: true,
@@ -60,6 +59,7 @@ const Claim = () => {
       });
 
     const claimYelds = async() => {
+
             writeContract({
                 address: stakingContractAddress,
                 abi: stakingContractAbi,
@@ -79,7 +79,7 @@ const Claim = () => {
             {earnedPending ? (
                 <Spinner />
             ) : (
-                <Text>Yout current yelds amount is : {earnedGet?.toString()}</Text>
+                <Text>Yout current token amount is : {earnedGet?.toString()}</Text>
             )}
        </Box>
 

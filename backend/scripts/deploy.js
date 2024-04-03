@@ -68,8 +68,8 @@ async function main() {
   console.log(
     `Allowance of  ${stAddr} for the token ${stru} is ${allowanceStr.toString()}`
   );
-  staking.setYeldDuration(30);
-  staking.notifyYeldAmount(5);
+  staking.setYeldDuration(60);
+  staking.setYeldAmount(120); // 2% rate
   //await staking.sendInitialAmount(testAddr,50);
   
   //await staking.stake(testAddr, 200);

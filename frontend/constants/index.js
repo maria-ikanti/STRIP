@@ -1,8 +1,9 @@
 // Dans ce fichier je viens récupérer les informations indispensables pour communiquer avec un contrat intelligent : l'adresse du contract et son abi.
-export const struTokenAddress="0xefAB0Beb0A557E452b398035eA964948c750b2Fd";
-export const strpTokenAddress="0xaca81583840B1bf2dDF6CDe824ada250C1936B4D";
-export const stryTokenAddress="0x70bDA08DBe07363968e9EE53d899dFE48560605B";
-export const stakingContractAddress="0x26B862f640357268Bd2d9E95bc81553a2Aa81D7E";
+export const struTokenAddress="0x32EEce76C2C2e8758584A83Ee2F522D4788feA0f";
+export const strpTokenAddress="0x01c1DeF3b91672704716159C9041Aeca392DdFfb";
+export const stryTokenAddress="0x02b0B4EFd909240FCB2Eb5FAe060dC60D112E3a4";
+export const stakingContractAddress="0x638A246F0Ec8883eF68280293FFE8Cfbabe61B44";
+
 export const stakingContractAbi=[
   {
     "inputs": [
@@ -308,19 +309,6 @@ export const stakingContractAbi=[
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_yeld",
-        "type": "uint256"
-      }
-    ],
-    "name": "notifyYeldAmount",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "owner",
     "outputs": [
@@ -357,6 +345,19 @@ export const stakingContractAbi=[
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "_yeld",
+        "type": "uint256"
+      }
+    ],
+    "name": "setYeldAmount",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "_yeldDuration",
         "type": "uint256"
       }
@@ -375,29 +376,6 @@ export const stakingContractAbi=[
       }
     ],
     "name": "stake",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_amount",
-        "type": "uint256"
-      },
-      {
-        "internalType": "contract STRP",
-        "name": "_strpContact",
-        "type": "address"
-      },
-      {
-        "internalType": "contract STRY",
-        "name": "_stryContract",
-        "type": "address"
-      }
-    ],
-    "name": "stakeAndStrip",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
