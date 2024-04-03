@@ -4,8 +4,6 @@ import { useEffect, useState } from 'react';
 // On importe les données de contrats
 import { stakingContractAddress, stakingContractAbi } from '@/constants';
 import { struTokenAddress, struTokenAbi } from '@/constants'
-import { strpTokenAddress, strpTokenAbi } from '@/constants';
-import { stryTokenAddress, stryTokenAbi } from '@/constants'
 import { useReadContract, useAccount, useWriteContract, useWaitForTransactionReceipt, useWatchContractEvent } from 'wagmi';
 import {Alert, AlertIcon, Box, useToast, Flex, Heading, Spinner, Text, Input, Button} from '@chakra-ui/react';
 import { isAddress } from "viem";
@@ -61,26 +59,22 @@ const Stake = () => {
 
   const { data: stryBalanceGet, error: stryBalanceError, isPending: stryBalancePending, refetch: stryBalanceRefetch } = useReadContract({
     // adresse du contrat
-    address: stryTokenAddress,
+    address: stakingContractAddress,
     // abi du contrat
-    abi: stryTokenAbi,
+    abi: stakingContractAbi,
     // nom de la fonction dans le smart contract
-    functionName: 'balanceOf',
-    //arguments
-    args : [address],
+    functionName: 'balanceOfStry',
     // qui appelle la fonction ?
     account: address
   });
 
   const { data: strpBalanceGet, error: strpBalanceError, isPending: strpBalancePending, refetch: strpBalanceRefetch } = useReadContract({
     // adresse du contrat
-    address: strpTokenAddress,
+    address: stakingContractAddress,
     // abi du contrat
-    abi: strpTokenAbi,
+    abi: stakingContractAbi,
     // nom de la fonction dans le smart contract
-    functionName: 'balanceOf',
-    //arguments
-    args : [address],
+    functionName: 'balanceOfStrp',
     // qui appelle la fonction ?
     account: address
   });

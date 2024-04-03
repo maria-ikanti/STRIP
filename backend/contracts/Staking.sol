@@ -17,7 +17,6 @@ event Staked(address indexed user, uint256 amount);
 event Withdrawn(address indexed user, uint256 amount);
 event YeldPaid(address indexed user, uint256 reward);
 event YeldDurationUpdated(uint256 newDuration);
-//event PeriodFinishedUpdated(uint256 newPeriodFinished);
 event Recovered(address token, uint256 amount);
 event Exit(address sender, uint256 amount);
 
@@ -32,8 +31,7 @@ contract Staking is ReentrancyGuard, Ownable {
     IERC20 public stakingToken;
     STRP public strpToken;
     STRY public stryToken;
-    //Strip public stripContract;
-    uint256 public periodFinish=1; // maturity
+    uint256 public periodFinish; // maturity
     uint256 public yeldRate;
     uint256 public yeldDuration = 1 minutes;
     uint256 public lastUpdateTime;
@@ -55,6 +53,7 @@ contract Staking is ReentrancyGuard, Ownable {
         yeldsToken = IERC20(_yeldsToken);
         stakingToken = IERC20(_stakingToken);
         strpToken = new STRP();
+        stryToken = new STRY();
     }
 
     /**
@@ -78,11 +77,6 @@ contract Staking is ReentrancyGuard, Ownable {
             return yeldsPerTokenStored;
         }
         // Since the last time we made an update
-        //uint periodApplicable = 1; //lastTimeYeldApplicable() - lastUpdateTime;
-        console.log('yeldPerToken : periodApplicable ',lastTimeYeldApplicable() - lastUpdateTime);
-        console.log('yeldPerToken : yeldsPerTokenStored ',yeldsPerTokenStored);
-        console.log('yeldPerToken : _totalSupply ',_totalSupply);
-        console.log('yeldPerToken=',yeldsPerTokenStored * (yeldRate *(lastTimeYeldApplicable() - lastUpdateTime)* 1e18) / _totalSupply);
         return yeldsPerTokenStored + (yeldRate *(lastTimeYeldApplicable() - lastUpdateTime)* 1e18) / _totalSupply;
     }
 
@@ -127,6 +121,14 @@ contract Staking is ReentrancyGuard, Ownable {
         return _balances[_account];
     }
 
+    function balanceOfStrp() external nonReentrant returns (uint256){
+        return strpToken.balanceOf(msg.sender);
+    }
+
+    function balanceOfStry() external nonReentrant returns (uint256){
+        return stryToken.balanceOf(msg.sender);
+    }
+
     /**
     @notice Gets the yeld for a given duration
     @return uint256 the yeld for a given duration
@@ -134,10 +136,6 @@ contract Staking is ReentrancyGuard, Ownable {
     function getYeldForDuration() external view returns (uint256) {
         return yeldRate*yeldDuration;
     }
-
-    /**
-    @notice
-
 
     /**
     @notice the main staking function. Stakes the ERC20 token for a given address in the smart contact
@@ -149,6 +147,7 @@ contract Staking is ReentrancyGuard, Ownable {
         _balances[msg.sender] = _balances[msg.sender] + _amount;
         stakingToken.safeTransferFrom(msg.sender, address(this), _amount);
         strpToken.mintp(msg.sender, _amount);
+        stryToken.minty(msg.sender, _amount);
         emit Staked(msg.sender, _amount);
     }
 
@@ -167,6 +166,8 @@ contract Staking is ReentrancyGuard, Ownable {
         _totalSupply = _totalSupply - _amount;
         _balances[msg.sender] = _balances[msg.sender] - _amount ;
         stakingToken.safeTransfer(msg.sender, _amount);
+        strpToken.burn(msg.sender, _amount);
+        stryToken.burn(msg.sender, _amount);
         emit Withdrawn(msg.sender, _amount);
     }
 

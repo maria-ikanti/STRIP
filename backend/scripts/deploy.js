@@ -7,30 +7,30 @@ async function main() {
   
   const stru = await Stru.waitForDeployment();
 
-  const Strp = await hre.ethers.deployContract("STRP");
+  /*const Strp = await hre.ethers.deployContract("STRP");
   
   const strup = await Strp.waitForDeployment();
 
   const Stry = await hre.ethers.deployContract("STRY");
   
-  const stry = await Stry.waitForDeployment();
+  const stry = await Stry.waitForDeployment();*/
 
   const yeldsTokenAddr = Stru.target;
   const stakingTokenAddr = Stru.target;
-  const strpTokenAddr = Strp.target;
-  const stryTokenAddr = Stry.target;
+  //const strpTokenAddr = Strp.target;
+  //const stryTokenAddr = Stry.target;
 
   console.log(
     `STRU deployed to ${stakingTokenAddr}`
   );
 
-  console.log(
+  /*console.log(
     `STRP deployed to ${strpTokenAddr}`
   );
 
   console.log(
     `STRY deployed to ${stryTokenAddr}`
-  );
+  );*/
 
 
   //const staking = await hre.ethers.deployContract("Staking", [yeldsTokenAddr, stakingTokenAddr, strpTokenAddr, stryTokenAddr]);
@@ -41,12 +41,6 @@ async function main() {
 
   console.log(
     `Staking deployed to ${staking.target}`
-  );
-
-  const yeldForDuration = await staking.getYeldForDuration();
-
-  console.log(
-    `getYeldForDuration is  ${yeldForDuration.toString()}`
   );
   
   const testAddr = "0xBcd4042DE499D14e55001CcbB24a551F3b954096";
@@ -68,32 +62,14 @@ async function main() {
 
   await staking.setYeldDuration(300);
   await staking.setYeldAmount(600); // 
-  //await staking.sendInitialAmount(testAddr,50);
-  
-  //await staking.stake(testAddr, 200);
-  const balanceTest = await stru.balanceOf(testAddr);
-  //const yeldPerToken = await staking.yeldPerToken();
-  //const totalSupply = await staking.totalSupply();
-  //await staking.setYeldDuration(500);
-  
 
-  /*console.log(
-    `Balance of  ${testAddr} is ${balanceTest.toString()}`
-  );
 
-  const newBalanceStr = await stru.balanceOf(stAddr);
+  const yeldForDuration = await staking.getYeldForDuration();
 
   console.log(
-    `Balance of  ${stAddr} is ${newBalanceStr.toString()}`
+    `getYeldForDuration is  ${yeldForDuration.toString()}`
   );
 
-  /*console.log(
-    `yeldPerToken  is ${yeldPerToken}`
-  );
-
-  console.log(
-    `totalSupply  is ${totalSupply}`
-  );*/
 }
 
 // We recommend this pattern to be able to use async/await everywhere
