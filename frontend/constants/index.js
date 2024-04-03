@@ -1,8 +1,8 @@
 // Dans ce fichier je viens récupérer les informations indispensables pour communiquer avec un contrat intelligent : l'adresse du contract et son abi.
-export const struTokenAddress="0xe6bB6dDd5F5372fAB6e2C43A53abc3722360c93d";
-export const strpTokenAddress="0x22d7f7Fea092fF09cA83cADC8bFe264c8d4F7Cb5";
-export const stryTokenAddress="0x82528F4a6c9B2910755bA2bD6298fC09C0e206E5";
-export const stakingContractAddress="0x3efe7fb64822912313457F4D019bf12D46B92A94";
+export const struTokenAddress="0xFD6F7A6a5c21A3f503EBaE7a473639974379c351";
+export const strpTokenAddress="0xa6e99A4ED7498b3cdDCBB61a6A607a4925Faa1B7";
+export const stryTokenAddress="0x5302E909d1e93e30F05B5D6Eea766363D14F9892";
+export const stakingContractAddress="0x0ed64d01D0B4B655E410EF1441dD677B695639E7";
 
 export const stakingContractAbi=[
   {
@@ -85,25 +85,6 @@ export const stakingContractAbi=[
     ],
     "name": "SafeERC20FailedOperation",
     "type": "error"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "sender",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      }
-    ],
-    "name": "Exit",
-    "type": "event"
   },
   {
     "anonymous": false,
@@ -254,13 +235,6 @@ export const stakingContractAbi=[
   },
   {
     "inputs": [],
-    "name": "exit",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "getYeldForDuration",
     "outputs": [
       {
@@ -335,7 +309,7 @@ export const stakingContractAbi=[
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_yeld",
+        "name": "_amount",
         "type": "uint256"
       }
     ],

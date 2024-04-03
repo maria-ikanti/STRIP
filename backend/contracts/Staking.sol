@@ -34,7 +34,7 @@ contract Staking is ReentrancyGuard, Ownable {
     IERC20 public strpToken;
     IERC20 public stryToken;
     //Strip public stripContract;
-    uint256 public periodFinish; // maturity
+    uint256 public periodFinish=1; // maturity
     uint256 public yeldRate;
     uint256 public yeldDuration = 1 minutes;
     uint256 public lastUpdateTime;
@@ -67,13 +67,14 @@ contract Staking is ReentrancyGuard, Ownable {
     /**
     @notice A modifier to be executed on any deposit or withdraw 
      */
-    modifier resetYeld(address _account) {
+    modifier updateYeld(address _account) {
         yeldsPerTokenStored = yeldPerToken();
         lastUpdateTime = lastTimeYeldApplicable();
         require (_account != address(0), "Must be a valid address");
         // Update the gains table for the given account
         yelds[_account] = earned(_account);
         console.log('resetYeld : yelds[_account]',yelds[_account]);
+        console.log('resetYeld : lastUpdateTime',lastUpdateTime);
         // Update the payed yelds for the given user
         userYeldsPerTokenPaid[_account] = yeldsPerTokenStored;
         console.log('resetYeld : yeldsPerTokenStored', yeldsPerTokenStored);
@@ -83,42 +84,49 @@ contract Staking is ReentrancyGuard, Ownable {
     /// @notice returns the yelds earned for each token staked. Avec intérêts composés
     function yeldPerToken() public view returns (uint256) {
         if (_totalSupply == 0) {
+            console.log('yeldPerToken= dans le if', _totalSupply, ' ', yeldsPerTokenStored);
             return yeldsPerTokenStored;
         }
         // Since the last time we made an update
-        uint periodApplicable = 1; //lastTimeYeldApplicable() - lastUpdateTime;
-        // The period per rate, devided by the total supply
-        console.log('yeldPerToken: lastTimeYeldApplicable()', lastTimeYeldApplicable());
-        console.log('yeldPerToken : lastUpdateTime', lastUpdateTime);
-        console.log('yeldPerToken : periodApplicable', periodApplicable);
-        console.log('yeldPerToken : _totalSupply', _totalSupply);
-        console.log('yeldPerToken : yeldsPerTokenStored', yeldsPerTokenStored);
-        console.log('yeldPerToken : result before return', yeldsPerTokenStored + periodApplicable*yeldRate/_totalSupply);
-        return yeldsPerTokenStored + periodApplicable*yeldRate*1e18/_totalSupply;
-        //return (yeldsPerTokenStored)*yeldRate*periodApplicable/_totalSupply;
+        //uint periodApplicable = 1; //lastTimeYeldApplicable() - lastUpdateTime;
+        console.log('yeldPerToken : periodApplicable ',lastTimeYeldApplicable() - lastUpdateTime);
+        console.log('yeldPerToken : yeldsPerTokenStored ',yeldsPerTokenStored);
+        console.log('yeldPerToken : _totalSupply ',_totalSupply);
+        console.log('yeldPerToken=',yeldsPerTokenStored * (yeldRate *(lastTimeYeldApplicable() - lastUpdateTime)* 1e18) / _totalSupply);
+        return yeldsPerTokenStored + (yeldRate *(lastTimeYeldApplicable() - lastUpdateTime)* 1e18) / _totalSupply;
     }
 
     /** @notice The las time when we are supposed to give a yeld. If periodFinish, then it means that the last time is in the past. Else, it is the last block.timestamp
     @return uint256 period (datetime)
     */
     function lastTimeYeldApplicable() public view returns (uint256) {
-        console.log('lastTimeYeldApplicable: block.timestamp', block.timestamp);
-        console.log('lastTimeYeldApplicable: periodFinish', periodFinish);
+        console.log('lastTimeYeldApplicable: result', block.timestamp < periodFinish ? block.timestamp : periodFinish);
+        
         return block.timestamp < periodFinish ? block.timestamp : periodFinish;
     }
 
     /**
-    @notice Returns the total earned by a given account + the initial amount
+    @notice Returns the total earned by a given account 
      */
     function earned(address _account) public view returns (uint256) {
-        console.log('earned: _balances[_account]', _balances[_account]);
-        console.log('earned: yeldPerToken()', yeldPerToken());
-        console.log('earned: userYeldsPerTokenPaid[_account]', userYeldsPerTokenPaid[_account]);
+        console.log('earned: result', (_balances[_account]*(yeldPerToken()-userYeldsPerTokenPaid[_account]))/1e18 + yelds[_account]);
+        //console.log('earned: yeldPerToken()', yeldPerToken());
+        //console.log('earned: userYeldsPerTokenPaid[_account]', userYeldsPerTokenPaid[_account]);
         console.log('earned: yelds[_account]', yelds[_account]);
-        console.log('earned: before return ', _balances[_account]*(yeldPerToken()-userYeldsPerTokenPaid[_account])/1e18 + yelds[_account]);
-        //return _balances[account].mul(yeldPerToken().sub(userYeldsPerTokenPaid[account])).div(1e18).add(yelds[account]);
-        return _balances[_account]*(yeldPerToken()-userYeldsPerTokenPaid[_account])/1e18 + yelds[_account];
-        //return _balances[_account]*((yeldPerToken()-userYeldsPerTokenPaid[_account]) + yelds[_account]);
+        //console.log('earned: before return ', _balances[_account]*(yeldPerToken()-userYeldsPerTokenPaid[_account])/1e18 + yelds[_account]);
+
+        return (_balances[_account]*(yeldPerToken()-userYeldsPerTokenPaid[_account]))/1e18 + yelds[_account];
+    }
+
+    /**
+    @notice  Claim the yelds */
+    function claimYeld() public nonReentrant updateYeld(msg.sender){
+        uint256 yeld = yelds[msg.sender];
+        console.log('claim  : yelds ', yeld);
+        require (yeld>0, "You have no yelds");
+        yelds[msg.sender] = 0;
+        yeldsToken.safeTransfer(msg.sender, yeld);
+        emit YeldPaid(msg.sender, yeld);
     }
 
     /**
@@ -142,9 +150,9 @@ contract Staking is ReentrancyGuard, Ownable {
     @return uint256 the yeld for a given duration
      */
     function getYeldForDuration() external view returns (uint256) {
-        console.log('getYeldForDuration : yeldRate', yeldRate);
+        /*console.log('getYeldForDuration : yeldRate', yeldRate);
         console.log('getYeldForDuration : yeldDuration', yeldDuration);
-        console.log('getYeldForDuration : yeldRate*yeldDuration', yeldRate*yeldDuration);
+        console.log('getYeldForDuration : yeldRate*yeldDuration', yeldRate*yeldDuration);*/
         return yeldRate*yeldDuration;
     }
 
@@ -156,7 +164,7 @@ contract Staking is ReentrancyGuard, Ownable {
     @notice the main staking function. Stakes the ERC20 token for a given address in the smart contact
     @param _amount the amount of the tokens to be staked
      */
-    function stake(uint _amount) external nonReentrant resetYeld(msg.sender){
+    function stake(uint _amount) external nonReentrant updateYeld(msg.sender){
         require(_amount > 0, "Amount to be staked must be > 0");
         _totalSupply = _totalSupply + _amount;
         //vérifier
@@ -165,8 +173,8 @@ contract Staking is ReentrancyGuard, Ownable {
         _balances[msg.sender] = _balances[msg.sender] + _amount;
         stakingToken.safeTransferFrom(msg.sender, address(this), _amount);
         //console.log('apres staking _balances of : ', address(this),' is ', _balances[address(this)]);
-        //console.log('apres staking _balances of : ', msg.sender,' is ', _balances[msg.sender]);
-        yelds[msg.sender] = earned(msg.sender);
+        console.log('apres staking _balances of : ', msg.sender,' is ', _balances[msg.sender]);
+        //yelds[msg.sender] = earned(msg.sender);
         // strips the undelying token into 2 tokens
         // stripContract.strip(_address, _amount);
         emit Staked(msg.sender, _amount);
@@ -202,54 +210,29 @@ contract Staking is ReentrancyGuard, Ownable {
     @notice Allows the user to withdraw the staked tokens
     @param _amount the amount to be withdrawn
      */
-    function withdraw(uint _amount) public nonReentrant resetYeld(msg.sender){
+    function withdraw(uint _amount) public nonReentrant updateYeld(msg.sender){
         require(_amount > 0, "Must withrow a positive value");
         uint256 tempBalance = _balances[msg.sender];
         require (_amount <= tempBalance, "You don't have enough tokens");
         _totalSupply = _totalSupply - _amount;
-        //console.log('avant withdraw _balances of : ', address(this),' is ', _balances[address(this)]);
-        //console.log('avant withdraw _balances of : ', msg.sender,' is ', _balances[msg.sender]);
         _balances[msg.sender] = _balances[msg.sender] - _amount ;
-        //console.log('apres withdraw _balances of : ', address(this),' is ', _balances[address(this)]);
-        //console.log('apres withdraw _balances of : ', msg.sender,' is ', _balances[msg.sender]);
         stakingToken.safeTransfer(msg.sender, _amount);
-        //stakingToken.safeTransferFrom(address(this), msg.sender, _amount);
-        //console.log('apres safe transfer');
         emit Withdrawn(msg.sender, _amount);
     }
 
-    /**
-    @notice  Claim the yelds */
-    function claimYeld() public nonReentrant resetYeld(msg.sender) {
-        uint256 yeld = yelds[msg.sender];
-        console.log('claim  : yelds ', yeld);
-        require (yeld>0, "You have no yelds");
-        yelds[msg.sender] = 0;
-        yeldsToken.safeTransfer(msg.sender, yeld+1);
-        emit YeldPaid(msg.sender, yeld);
-    }
-
-    /**
-    @notice Withdraw the total of the amount staked */
-    function exit() external {
-        withdraw(_balances[msg.sender]);
-        claimYeld();
-        emit Exit(msg.sender, _balances[msg.sender]);
-    }
-
-    function setYeldAmount(uint256 _yeld) external onlyOwner {
+    function setYeldAmount(uint256 _amount) external onlyOwner updateYeld(msg.sender){
         if (block.timestamp >= periodFinish) {
-            yeldRate = _yeld / yeldDuration;
+            yeldRate = _amount / yeldDuration;
             console.log('setYeldAmount: block.timestamp ds if',block.timestamp);
             console.log('setYeldAmount: periodFinish ds if',periodFinish);
             console.log('setYeldAmount: period ds if',block.timestamp-periodFinish);
             console.log('setYeldAmount: yeldRate ds if',yeldRate);
-            console.log('setYeldAmount: _yeld ds if',_yeld);
+            console.log('setYeldAmount: _amount ds if',_amount);
             console.log('setYeldAmount: yeldDuration ds if',yeldDuration);
         } else {
             uint256 remaining = periodFinish - block.timestamp;
             uint256 leftover = remaining * yeldRate;
-            yeldRate = (_yeld + leftover)/yeldDuration;
+            yeldRate = (_amount + leftover)/yeldDuration;
             console.log('setYeldAmount: yeldRate ds else',yeldRate);
         }
         console.log('setYeldAmount :yeldRate', yeldRate );
@@ -265,24 +248,11 @@ contract Staking is ReentrancyGuard, Ownable {
         periodFinish = block.timestamp + yeldDuration;
         console.log('setYeldAmount :lastUpdateTime', lastUpdateTime );
         console.log('setYeldAmount :periodFinish', periodFinish );
-        console.log('setYeldAmount :_yeld after', _yeld );
-        emit YeldAdded(_yeld);
+        console.log('setYeldAmount :_yeld after', _amount );
+        emit YeldAdded(_amount);
     } 
 
-    /*function setPeriodFinish(uint256 _periodFinish) external onlyOwner {
-        require(
-            _periodFinish > block.timestamp ,
-            "Previous yeld period must be complete before changing the duration for the new period"
-        );
-        periodFinish = _periodFinish;
-        emit PeriodFinishedUpdated(_periodFinish);
-    }*/
-
     function setYeldDuration(uint256 _yeldDuration) external onlyOwner {
-        require(
-            block.timestamp > periodFinish,
-            "Previous yeld period must be complete before changing the duration for the new period"
-        );
         yeldDuration = _yeldDuration;
         emit YeldDurationUpdated(yeldDuration);
     } 

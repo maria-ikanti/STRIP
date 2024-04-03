@@ -27,8 +27,6 @@ const Stake = () => {
 
   const toast = useToast();
 
-  // Un state pour stocker l'adresse du user à minter
-  const [addressToStake, setAddressToStake] = useState('');
   // Un State pour stocker le nombre de l'input
   const [tokenAmount, setTokenAmount] = useState('');
 
@@ -113,7 +111,7 @@ const Stake = () => {
           setTokenAmount('');
         },
         // Si erreur
-        onError: (mintError) => {
+        onError: (stakeError) => {
             toast({
                 title: stakeError.shortMessage,
                 status: "error",
@@ -125,6 +123,9 @@ const Stake = () => {
   });
 
   const stakeSTRU = async() => {
+        console.log(tokenAmount);
+        console.log(balanceGet);
+        console.log(stakingContractAddress);
       if(!isNaN(tokenAmount)) {
             if(tokenAmount>balanceGet){
                 toast({

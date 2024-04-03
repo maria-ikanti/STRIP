@@ -15,8 +15,8 @@ import {
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 
-//import { sepolia } from '@/utils/sepolia';
-import { sepolia } from 'wagmi/chains';
+import { hardhat } from 'wagmi/chains';
+//import { sepolia } from 'wagmi/chains';
 //import { sepolia } from '@/utils/sepolia';
 
 const { wallets } = getDefaultWallets();
@@ -33,7 +33,7 @@ const config = getDefaultConfig({
           wallets: [argentWallet, trustWallet, ledgerWallet],
       },
   ],
-  chains: [sepolia],
+  chains: [hardhat],
   ssr: true,
 });
 

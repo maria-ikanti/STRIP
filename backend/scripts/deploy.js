@@ -50,8 +50,8 @@ async function main() {
   );
   
   const testAddr = "0xBcd4042DE499D14e55001CcbB24a551F3b954096";
-  await stru.mint(testAddr,1000);
-  await stru.mint(stAddr,5000);
+  await stru.mint(testAddr,10000);
+  //await stru.mint(stAddr,5000);
 
   const balanceStr = await stru.balanceOf(testAddr);
 
@@ -61,16 +61,13 @@ async function main() {
   );
   
 
-  await stru.increaseAllow(testAddr, stAddr, 1000);
-  await stru.increaseAllow(stAddr, testAddr, 1000);
+  await stru.increaseAllow(testAddr, stAddr, 10000);
+  await stru.increaseAllow(stAddr, testAddr, 10000);
 
   const allowanceStr = await stru.allowance(testAddr, stAddr);
-  
-  console.log(
-    `Allowance of  ${stAddr} for the token ${stru} is ${allowanceStr.toString()}`
-  );
-  staking.setYeldDuration(60);
-  staking.setYeldAmount(120); // 2% rate
+
+  await staking.setYeldDuration(300);
+  await staking.setYeldAmount(600); // 2% rate
   //await staking.sendInitialAmount(testAddr,50);
   
   //await staking.stake(testAddr, 200);
