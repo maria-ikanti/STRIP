@@ -11,18 +11,14 @@ contract STRU is ERC20, Ownable {
 	event Allowed(address receiver, uint256 amount); 
 
 	uint public price;
-	//uint decimals;
-	//uint mult_dec;
-	
 
+  
+    /// @notice Creates a STRP ERC20 token contract
     constructor() ERC20('Faucet STRU staked token', 'STRU') Ownable(msg.sender){
-		/*price = 100000000000000000; //price in wei 1 Token = 0.1ETH
-        decimals = 18;
-        mult_dec = 10**decimals;*/
 	} 
  
 	/**
-	@notice Mint Faucet
+	@notice Mint STRY
 	@param _recipient receiver address
 	@param _amount to be minted
 	 */
@@ -33,7 +29,7 @@ contract STRU is ERC20, Ownable {
 	}
 
 	/**
-	@notice Increase allowance Faucet
+	@notice Increase STRY token allowance for the given address
 	@param _recipient receiver address
 	@param _amount to be allowed
 	 */

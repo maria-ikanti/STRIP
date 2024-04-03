@@ -5,7 +5,7 @@ require("@nomicfoundation/hardhat-toolbox");
 require('dotenv').config();
 require("@nomicfoundation/hardhat-verify");
 require("hardhat-gas-reporter");
-//require('hardhat-docgen');
+require('hardhat-docgen');
 //require("@nomicfoundation/hardhat-toolbox");
 //require("@solidity-coverage");
 //require("@nomiclabs/hardhat-ethers");

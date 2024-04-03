@@ -7,8 +7,6 @@ import "./STRP.sol";
 import "./STRY.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-//import "openzeppelin-solidity-2.3.0/contracts/math/SafeMath.sol";
-
 
 /* ========== EVENTS ========== */
 
@@ -23,7 +21,6 @@ event Exit(address sender, uint256 amount);
 contract Staking is ReentrancyGuard, Ownable {
 
     using SafeERC20 for IERC20;
- //       using SafeMath for uint256;
 
     /* ========== STATE VARIABLES ========== */
 
@@ -48,6 +45,11 @@ contract Staking is ReentrancyGuard, Ownable {
     // Total deposited amount by account
     mapping(address => uint) private _balances;
 
+    /**
+    @notice This is the staking contract constuctor
+    @param _yeldsToken The address of the ERC20 token to be staked
+    @param _yeldsToken The address of the ERC20 token of the reward
+     */
     constructor(address _yeldsToken, address _stakingToken) Ownable(msg.sender) {
     //constructor(address _yeldsToken, address _stakingToken, address _strpToken, address _stryToken) Ownable(msg.sender) {
         yeldsToken = IERC20(_yeldsToken);
@@ -58,6 +60,7 @@ contract Staking is ReentrancyGuard, Ownable {
 
     /**
     @notice A modifier to be executed on any stake, deposit or withdraw 
+    @param _account The account to be reset
      */
     modifier updateYeld(address _account) {
         yeldsPerTokenStored = yeldPerToken();
@@ -71,6 +74,7 @@ contract Staking is ReentrancyGuard, Ownable {
     }
 
     /// @notice returns the yelds earned for each token staked. Avec intérêts composés
+    /// @return uint256 The amount of the tokens reward
     function yeldPerToken() public view returns (uint256) {
         if (_totalSupply == 0) {
             console.log('yeldPerToken= dans le if', _totalSupply, ' ', yeldsPerTokenStored);
@@ -80,7 +84,7 @@ contract Staking is ReentrancyGuard, Ownable {
         return yeldsPerTokenStored + (yeldRate *(lastTimeYeldApplicable() - lastUpdateTime)* 1e18) / _totalSupply;
     }
 
-    /** @notice The las time when we are supposed to give a yeld. If periodFinish, then it means that the last time is in the past. Else, it is the last block.timestamp
+    /** @notice The last time when we are supposed to give a yeld. If periodFinish, then it means that the last time is in the past. Else, it is the last block.timestamp
     @return uint256 period (datetime)
     */
     function lastTimeYeldApplicable() public view returns (uint256) {
@@ -89,6 +93,7 @@ contract Staking is ReentrancyGuard, Ownable {
 
     /**
     @notice Returns the total earned by a given account 
+    @param _account the account to be applied
      */
     function earned(address _account) public view returns (uint256) {
         return (_balances[_account]*(yeldPerToken()-userYeldsPerTokenPaid[_account]))/1e18 + yelds[_account];
@@ -121,10 +126,18 @@ contract Staking is ReentrancyGuard, Ownable {
         return _balances[_account];
     }
 
+    /**
+    @notice Return the balance in SRTP of the sender
+    @return uint256 the balance in SRTP
+     */
     function balanceOfStrp() external nonReentrant returns (uint256){
         return strpToken.balanceOf(msg.sender);
     }
 
+    /**
+    @notice Return the balance in SRTY of the sender
+    @return uint256 the balance in SRTY
+     */
     function balanceOfStry() external nonReentrant returns (uint256){
         return stryToken.balanceOf(msg.sender);
     }
@@ -146,14 +159,27 @@ contract Staking is ReentrancyGuard, Ownable {
         _totalSupply = _totalSupply + _amount;
         _balances[msg.sender] = _balances[msg.sender] + _amount;
         stakingToken.safeTransferFrom(msg.sender, address(this), _amount);
-        strpToken.mintp(msg.sender, _amount);
-        stryToken.minty(msg.sender, _amount);
+        strip(msg.sender, _amount);
         emit Staked(msg.sender, _amount);
     }
 
-        /**
-    @notice the main staking function. Stakes the ERC20 token for a given address in the smart contact
-    @param _amount the amount of the tokens to be staked
+    /**
+    @notice the main stripping function. mints STRP and STRY for the given account after staking
+    @param _amount the amount of the tokens to be minted
+     */
+    function strip(address _account, uint _amount) internal nonReentrant {
+        strpToken.mintp(_account, _amount);
+        stryToken.minty(_account, _amount);
+    }
+
+    /**
+    @notice the main redeeming (remembrement) function. burns STRP and STRY for the given account after withdrawing
+    @param _amount the amount of the tokens to be burned
+     */
+    function redeem(address _account, uint _amount) internal nonReentrant {
+        strpToken.burnp(_account, _amount);
+        stryToken.burny(_account, _amount);
+    }
     
     /**
     @notice Allows the user to withdraw the staked tokens
@@ -165,12 +191,15 @@ contract Staking is ReentrancyGuard, Ownable {
         require (_amount <= tempBalance, "You don't have enough tokens");
         _totalSupply = _totalSupply - _amount;
         _balances[msg.sender] = _balances[msg.sender] - _amount ;
-        strpToken.burnp(msg.sender, _amount);
-        stryToken.burny(msg.sender, _amount);
+        redeem(msg.sender, _amount);
         stakingToken.safeTransfer(msg.sender, _amount);
         emit Withdrawn(msg.sender, _amount);
     }
 
+    /**
+    @notice Sets the amount of yelds. Used to init the contract
+    @param _amount the amount to be withdrawn
+     */
     function setYeldAmount(uint256 _amount) external onlyOwner updateYeld(msg.sender){
         if (block.timestamp >= periodFinish) {
             yeldRate = _amount / yeldDuration;
@@ -179,10 +208,6 @@ contract Staking is ReentrancyGuard, Ownable {
             uint256 leftover = remaining * yeldRate;
             yeldRate = (_amount + leftover)/yeldDuration;
         }
-        // Ensure the provided yeld amount is not more than the balance in the contract.
-        // This keeps the yeld rate in the right range, preventing overflows due to
-        // very high values of yeldRate in the earned and yeldPerToken functions;
-        // Yeld + leftover must be less than 2^256 / 10^18 to avoid overflow.
         uint balance = yeldsToken.balanceOf(address(this));
         require(yeldRate <= balance / yeldDuration, "Provided amount too high");
         lastUpdateTime = block.timestamp;
@@ -190,6 +215,10 @@ contract Staking is ReentrancyGuard, Ownable {
         emit YeldAdded(_amount);
     } 
 
+    /**
+    @notice Sets the yeld duration
+    @param _yeldDuration the duration in seconds
+     */
     function setYeldDuration(uint256 _yeldDuration) external onlyOwner {
         yeldDuration = _yeldDuration;
         emit YeldDurationUpdated(yeldDuration);

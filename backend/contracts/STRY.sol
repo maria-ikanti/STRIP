@@ -11,10 +11,11 @@ contract STRY is ERC20, Ownable {
 	event Burned(address receiver, uint256 amount);
 	event Allowed(address receiver, uint256 amount); 
 
-    constructor() ERC20('STRIP Yeld token', 'STRY') Ownable(msg.sender) {} 
+    /// @notice Creates a STRY ERC20 token contract
+	constructor() ERC20('STRIP Yeld token', 'STRY') Ownable(msg.sender) {} 
  
 	/**
-	@notice Mint Faucet
+	@notice Mint STRY
 	@param _recipient receiver address
 	@param _amount to be minted
 	 */
@@ -25,7 +26,7 @@ contract STRY is ERC20, Ownable {
 	}
 
 	/**
-	@notice Burn the amount for the given address
+	@notice Burn the STRY token amount for the given address
 	@param _recipient receiver address
 	@param _amount to be burned
 	 */
