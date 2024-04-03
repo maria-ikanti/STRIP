@@ -41,6 +41,28 @@ const Withdraw = () => {
     account: address
   });
 
+  const { data: stryBalanceGet, error: stryBalanceError, isPending: stryBalancePending, refetch: stryBalanceRefetch } = useReadContract({
+    // adresse du contrat
+    address: stakingContractAddress,
+    // abi du contrat
+    abi: stakingContractAbi,
+    // nom de la fonction dans le smart contract
+    functionName: 'balanceOfStry',
+    // qui appelle la fonction ?
+    account: address
+  });
+
+  const { data: strpBalanceGet, error: strpBalanceError, isPending: strpBalancePending, refetch: strpBalanceRefetch } = useReadContract({
+    // adresse du contrat
+    address: stakingContractAddress,
+    // abi du contrat
+    abi: stakingContractAbi,
+    // nom de la fonction dans le smart contract
+    functionName: 'balanceOfStrp',
+    // qui appelle la fonction ?
+    account: address
+  });
+
   const { data: contractBalanceGet, error: contractBlanceError, isPending: contractBalancePending, refetch: contractBalanceRefetch } = useReadContract({
     // adresse du contrat
     address: stakingContractAddress,
@@ -129,21 +151,38 @@ const Withdraw = () => {
       <Heading as='h2' size='xl' ml='5rem' mt="3rem" mb="3rem">
                     Withdraw your tokens
       </Heading>
-      <Box p="2rem">
+      <Box ml="2rem">
             {/* Est ce qu'on est en train de récupérer la balance en STRU ? */}
             {balancePending ? (
                 <Spinner />
             ) : (
-                <Text color="tomato">Your current STRU balance is : {balanceGet?.toString()}</Text>
+                <Text color='tomato'>Your current STRU balance is: {balanceGet?.toString()}</Text>
             )}
        </Box>
-
-       <Box p="2rem">
-            {/* Est ce qu'on est en train de récupérer les yelds en STRU ? */}
+       <Box ml="2rem">
+            {/* Est ce qu'on est en train de récupérer la balance du contrat en STRU ? */}
             {contractBalancePending ? (
                 <Spinner />
             ) : (
-                <Text color="orange">Your staked STRU tokens amount is : {contractBalanceGet?.toString()}</Text>
+                <Text color="orange">Your current staken STRU amount is: {contractBalanceGet?.toString()}</Text>
+            )}
+       </Box>
+
+       <Box ml="2rem">
+            {/* Est ce qu'on est en train de récupérer la balance du contrat en STRU ? */}
+            {strpBalancePending ? (
+                <Spinner />
+            ) : (
+                <Text color="yellow">Your current yearned STRP amount is: {strpBalanceGet?.toString()}</Text>
+            )}
+       </Box>
+
+       <Box ml="2rem">
+            {/* Est ce qu'on est en train de récupérer la balance du contrat en STRU ? */}
+            {stryBalancePending ? (
+                <Spinner />
+            ) : (
+                <Text color="white">Your current yearned STRY amount is: {stryBalanceGet?.toString()}</Text>
             )}
        </Box>
 

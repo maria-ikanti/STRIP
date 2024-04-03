@@ -160,14 +160,14 @@ contract Staking is ReentrancyGuard, Ownable {
     @param _amount the amount to be withdrawn
      */
     function withdraw(uint _amount) public nonReentrant updateYeld(msg.sender){
-        require(_amount > 0, "Must withrow a positive value");
+        require(_amount > 0, "Must withraw a positive value");
         uint256 tempBalance = _balances[msg.sender];
         require (_amount <= tempBalance, "You don't have enough tokens");
         _totalSupply = _totalSupply - _amount;
         _balances[msg.sender] = _balances[msg.sender] - _amount ;
+        strpToken.burnp(msg.sender, _amount);
+        stryToken.burny(msg.sender, _amount);
         stakingToken.safeTransfer(msg.sender, _amount);
-        strpToken.burn(msg.sender, _amount);
-        stryToken.burn(msg.sender, _amount);
         emit Withdrawn(msg.sender, _amount);
     }
 

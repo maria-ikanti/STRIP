@@ -12,7 +12,7 @@ const Layout = ({ children }) => {
       justifyContent="center"
     >
         <Header />
-        <HeaderMenu />
+        <HeaderMenu/>
 
             {children}
 

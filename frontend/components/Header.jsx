@@ -6,7 +6,7 @@ const Header = () => {
     <>
       <Flex justifyContent="center" direction="column" alignItems="center" p="2rem">
           <Image src='logo.png' alt='Strip project' boxSize='150px' mb='2rem'/>
-          <ConnectButton label="Sign in"/>
+          <ConnectButton label="Please connect"/>
       </Flex>
     </>
   )

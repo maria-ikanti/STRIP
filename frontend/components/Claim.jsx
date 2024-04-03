@@ -32,6 +32,30 @@ const Claim = () => {
         account: address
     });
 
+    const { data: strpBalanceGet, error: strpBalanceError, isPending: strpBalancePending, refetch: strpBalanceRefetch } = useReadContract({
+        // adresse du contrat
+        address: stakingContractAddress,
+        // abi du contrat
+        abi: stakingContractAbi,
+        // nom de la fonction dans le smart contract
+        functionName: 'balanceOfStrp',
+        // qui appelle la fonction ?
+        account: address
+      });
+
+    const { data: contractBalanceGet, error: contractBlanceError, isPending: contractBalancePending, refetch: contractBalanceRefetch } = useReadContract({
+        // adresse du contrat
+        address: stakingContractAddress,
+        // abi du contrat
+        abi: stakingContractAbi,
+        // nom de la fonction dans le smart contract
+        functionName: 'balanceOf',
+        //arguments
+        args : [address],
+        // qui appelle la fonction ?
+        account: address
+      });
+
     const { data: hash, error: claimError, isPending: claimIsPending, writeContract } = useWriteContract({
         mutation: {
             // Si ça a marché d'écrire dans le contrat
@@ -74,12 +98,28 @@ const Claim = () => {
       <Heading as='h2' size='xl' ml='5rem' mt="3rem" mb="3rem">
                    Claim your rewards
       </Heading>
+      <Box ml="2rem">
+            {/* Est ce qu'on est en train de récupérer la balance en STRU ? */}
+            {strpBalancePending ? (
+                <Spinner />
+            ) : (
+                <Text color='tomato'>Your global STRU balance is: {strpBalanceGet?.toString()}</Text>
+            )}
+       </Box>
+      <Box ml="2rem">
+            {/* Est ce qu'on est en train de récupérer la balance du contrat en STRU ? */}
+            {contractBalancePending ? (
+                <Spinner />
+            ) : (
+                <Text color="orange">Your current staken STRU amount is: {contractBalanceGet?.toString()}</Text>
+            )}
+       </Box>
       <Box p="2rem">
             {/* Est ce qu'on est en train de récupérer le earned ? */}
             {earnedPending ? (
                 <Spinner />
             ) : (
-                <Text color="tomato">Yout current rewards amount is : {earnedGet?.toString()}</Text>
+                <Text color="yellow">Yout current rewards amount is : {earnedGet?.toString()}</Text>
             )}
        </Box>
 

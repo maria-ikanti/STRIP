@@ -6,17 +6,13 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  MenuItemOption,
-  MenuGroup,
-  MenuOptionGroup,
-  MenuDivider,
 } from '@chakra-ui/react'
 
 const HeaderMenu = () => {
   return (
     <> 
-       <Menu>
-            <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+       <Menu backgroundColor="#CBC49B">
+            <MenuButton as={Button} rightIcon={<ChevronDownIcon />} mr="3rem" width="15rem" backgroundColor="#CBC49B" alignSelf="end">
                     Menu
             </MenuButton>
             <MenuList>
