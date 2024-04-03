@@ -7,7 +7,6 @@ import "./STRP.sol";
 import "./STRY.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "hardhat/console.sol";
 //import "openzeppelin-solidity-2.3.0/contracts/math/SafeMath.sol";
 
 
@@ -31,8 +30,8 @@ contract Staking is ReentrancyGuard, Ownable {
 
     IERC20 public yeldsToken;
     IERC20 public stakingToken;
-    IERC20 public strpToken;
-    IERC20 public stryToken;
+    STRP public strpToken;
+    STRY public stryToken;
     //Strip public stripContract;
     uint256 public periodFinish=1; // maturity
     uint256 public yeldRate;
@@ -55,17 +54,11 @@ contract Staking is ReentrancyGuard, Ownable {
     //constructor(address _yeldsToken, address _stakingToken, address _strpToken, address _stryToken) Ownable(msg.sender) {
         yeldsToken = IERC20(_yeldsToken);
         stakingToken = IERC20(_stakingToken);
-        //strpToken = IERC20(_strpToken);
-        //stryToken = IERC20(_stryToken);
-        //, uint256 _yeldRate, uint256 _yeldDuration
-       // yeldRate = _yeldRate;
-       // yeldDuration= _yeldDuration;
-        console.log('constructor yeld duration', yeldDuration);
-        //stripContract = new Strip();
+        strpToken = new STRP();
     }
 
     /**
-    @notice A modifier to be executed on any deposit or withdraw 
+    @notice A modifier to be executed on any stake, deposit or withdraw 
      */
     modifier updateYeld(address _account) {
         yeldsPerTokenStored = yeldPerToken();
@@ -73,11 +66,8 @@ contract Staking is ReentrancyGuard, Ownable {
         require (_account != address(0), "Must be a valid address");
         // Update the gains table for the given account
         yelds[_account] = earned(_account);
-        console.log('resetYeld : yelds[_account]',yelds[_account]);
-        console.log('resetYeld : lastUpdateTime',lastUpdateTime);
         // Update the payed yelds for the given user
         userYeldsPerTokenPaid[_account] = yeldsPerTokenStored;
-        console.log('resetYeld : yeldsPerTokenStored', yeldsPerTokenStored);
         _;
     }
 
@@ -100,8 +90,6 @@ contract Staking is ReentrancyGuard, Ownable {
     @return uint256 period (datetime)
     */
     function lastTimeYeldApplicable() public view returns (uint256) {
-        console.log('lastTimeYeldApplicable: result', block.timestamp < periodFinish ? block.timestamp : periodFinish);
-        
         return block.timestamp < periodFinish ? block.timestamp : periodFinish;
     }
 
@@ -109,12 +97,6 @@ contract Staking is ReentrancyGuard, Ownable {
     @notice Returns the total earned by a given account 
      */
     function earned(address _account) public view returns (uint256) {
-        console.log('earned: result', (_balances[_account]*(yeldPerToken()-userYeldsPerTokenPaid[_account]))/1e18 + yelds[_account]);
-        //console.log('earned: yeldPerToken()', yeldPerToken());
-        //console.log('earned: userYeldsPerTokenPaid[_account]', userYeldsPerTokenPaid[_account]);
-        console.log('earned: yelds[_account]', yelds[_account]);
-        //console.log('earned: before return ', _balances[_account]*(yeldPerToken()-userYeldsPerTokenPaid[_account])/1e18 + yelds[_account]);
-
         return (_balances[_account]*(yeldPerToken()-userYeldsPerTokenPaid[_account]))/1e18 + yelds[_account];
     }
 
@@ -150,9 +132,6 @@ contract Staking is ReentrancyGuard, Ownable {
     @return uint256 the yeld for a given duration
      */
     function getYeldForDuration() external view returns (uint256) {
-        /*console.log('getYeldForDuration : yeldRate', yeldRate);
-        console.log('getYeldForDuration : yeldDuration', yeldDuration);
-        console.log('getYeldForDuration : yeldRate*yeldDuration', yeldRate*yeldDuration);*/
         return yeldRate*yeldDuration;
     }
 
@@ -167,16 +146,9 @@ contract Staking is ReentrancyGuard, Ownable {
     function stake(uint _amount) external nonReentrant updateYeld(msg.sender){
         require(_amount > 0, "Amount to be staked must be > 0");
         _totalSupply = _totalSupply + _amount;
-        //vérifier
-        //console.log('avant staking _balances of : ', address(this),' is ', _balances[address(this)]);
-        //console.log('avant staking _balances of : ', msg.sender,' is ', _balances[msg.sender]);
         _balances[msg.sender] = _balances[msg.sender] + _amount;
         stakingToken.safeTransferFrom(msg.sender, address(this), _amount);
-        //console.log('apres staking _balances of : ', address(this),' is ', _balances[address(this)]);
-        console.log('apres staking _balances of : ', msg.sender,' is ', _balances[msg.sender]);
-        //yelds[msg.sender] = earned(msg.sender);
-        // strips the undelying token into 2 tokens
-        // stripContract.strip(_address, _amount);
+        strpToken.mintp(msg.sender, _amount);
         emit Staked(msg.sender, _amount);
     }
 
@@ -184,28 +156,6 @@ contract Staking is ReentrancyGuard, Ownable {
     @notice the main staking function. Stakes the ERC20 token for a given address in the smart contact
     @param _amount the amount of the tokens to be staked
     
-    function stakeAndStrip(uint _amount, STRP _strpContact, STRY _stryContract) external nonReentrant {
-        require(_amount > 0, "Amount to be staked must be > 0");
-        _totalSupply = _totalSupply + _amount;
-        _balances[msg.sender] = _balances[msg.sender] + _amount;
-        stakingToken.safeTransferFrom(msg.sender, address(this), _amount);
-        yelds[msg.sender] = earned(msg.sender);
-        strip(msg.sender, _amount, _strpContact, _stryContract);
-        emit Staked(msg.sender, _amount);
-    } */
-
-    /*function strip(address _stakedTokenDepositor, uint _amount, STRP _strpContact, STRY _stryContract) internal nonReentrant {
-
-        //strpToken = IERC20(_strpToken);
-        //stryToken = IERC20(_stryToken);
-        _strpContact.mint(_stakedTokenDepositor, _amount);
-        _stryContract.mint(_stakedTokenDepositor, _amount);
-        console.log('strip _stakedTokenDepositor : ', _stakedTokenDepositor);
-        console.log('strip _amount : ', _stakedTokenDepositor);
-        console.log( 'strip : stryToken.balanceOf(_stakedTokenDepositor) ', stryToken.balanceOf(_stakedTokenDepositor));
-        console.log('strip _amount : ', _stakedTokenDepositor);
-    }*/
-
     /**
     @notice Allows the user to withdraw the staked tokens
     @param _amount the amount to be withdrawn
@@ -223,32 +173,19 @@ contract Staking is ReentrancyGuard, Ownable {
     function setYeldAmount(uint256 _amount) external onlyOwner updateYeld(msg.sender){
         if (block.timestamp >= periodFinish) {
             yeldRate = _amount / yeldDuration;
-            console.log('setYeldAmount: block.timestamp ds if',block.timestamp);
-            console.log('setYeldAmount: periodFinish ds if',periodFinish);
-            console.log('setYeldAmount: period ds if',block.timestamp-periodFinish);
-            console.log('setYeldAmount: yeldRate ds if',yeldRate);
-            console.log('setYeldAmount: _amount ds if',_amount);
-            console.log('setYeldAmount: yeldDuration ds if',yeldDuration);
         } else {
             uint256 remaining = periodFinish - block.timestamp;
             uint256 leftover = remaining * yeldRate;
             yeldRate = (_amount + leftover)/yeldDuration;
-            console.log('setYeldAmount: yeldRate ds else',yeldRate);
         }
-        console.log('setYeldAmount :yeldRate', yeldRate );
         // Ensure the provided yeld amount is not more than the balance in the contract.
         // This keeps the yeld rate in the right range, preventing overflows due to
         // very high values of yeldRate in the earned and yeldPerToken functions;
         // Yeld + leftover must be less than 2^256 / 10^18 to avoid overflow.
         uint balance = yeldsToken.balanceOf(address(this));
-        console.log('setYeldAmount :balance', balance );
         require(yeldRate <= balance / yeldDuration, "Provided amount too high");
-
         lastUpdateTime = block.timestamp;
         periodFinish = block.timestamp + yeldDuration;
-        console.log('setYeldAmount :lastUpdateTime', lastUpdateTime );
-        console.log('setYeldAmount :periodFinish', periodFinish );
-        console.log('setYeldAmount :_yeld after', _amount );
         emit YeldAdded(_amount);
     } 
 

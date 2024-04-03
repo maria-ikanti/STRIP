@@ -1,8 +1,8 @@
 // Dans ce fichier je viens récupérer les informations indispensables pour communiquer avec un contrat intelligent : l'adresse du contract et son abi.
-export const struTokenAddress="0xFD6F7A6a5c21A3f503EBaE7a473639974379c351";
-export const strpTokenAddress="0xa6e99A4ED7498b3cdDCBB61a6A607a4925Faa1B7";
-export const stryTokenAddress="0x5302E909d1e93e30F05B5D6Eea766363D14F9892";
-export const stakingContractAddress="0x0ed64d01D0B4B655E410EF1441dD677B695639E7";
+export const struTokenAddress="0x3C15538ED063e688c8DF3d571Cb7a0062d2fB18D";
+export const strpTokenAddress="0xccf1769D8713099172642EB55DDFFC0c5A444FE9";
+export const stryTokenAddress="0x3904b8f5b0F49cD206b7d5AABeE5D1F37eE15D8d";
+export const stakingContractAddress="0x2Dd78Fd9B8F40659Af32eF98555B8b31bC97A351";
 
 export const stakingContractAbi=[
   {
@@ -1377,7 +1377,7 @@ export const strpTokenAbi=[
         "type": "uint256"
       }
     ],
-    "name": "mint",
+    "name": "mintp",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

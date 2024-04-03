@@ -79,7 +79,7 @@ const Claim = () => {
             {earnedPending ? (
                 <Spinner />
             ) : (
-                <Text>Yout current token amount is : {earnedGet?.toString()}</Text>
+                <Text color="tomato">Yout current rewards amount is : {earnedGet?.toString()}</Text>
             )}
        </Box>
 

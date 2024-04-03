@@ -4,6 +4,7 @@ pragma solidity ^0.8.24;
 
 import '@openzeppelin/contracts/token/ERC20/ERC20.sol';
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "hardhat/console.sol";
 
 contract STRP is ERC20, Ownable {
 
@@ -18,9 +19,10 @@ contract STRP is ERC20, Ownable {
 	@param _recipient receiver address
 	@param _amount to be minted
 	 */
-	function mint(address _recipient, uint _amount) external {
+	function mintp(address _recipient, uint _amount) external {
 		require(_amount>0, "You must enter a positif ammount");
 		_mint(_recipient, _amount);
+		console.log('mintp ', _recipient, ' ', _amount);
 		emit Minted(_recipient, _amount);
 	}
 
