@@ -16,7 +16,7 @@ const HeaderMenu = () => {
                     Menu
             </MenuButton>
             <MenuList>
-                <MenuItem as='a' href='/mint'>Mint</MenuItem>
+                <MenuItem as='a' href='/mint'>Mint STRU</MenuItem>
                 <MenuItem as='a' href='/stake'>Deposit</MenuItem>
                 <MenuItem as='a' href='/claim'>Claim rewards</MenuItem>
                 <MenuItem as='a' href='/withdraw'>Withdraw</MenuItem>
