@@ -40,7 +40,7 @@ contract STRU is ERC20, Ownable {
 	}
 
 	/** @notice Recevie implementation for security reasons */
-	receive() external payable {}
+	//receive() external payable {}
 	/** @notice Fallback implementation for security reasons */
-	fallback() external payable {}
+	//fallback() external payable {}
 }

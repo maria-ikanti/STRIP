@@ -32,7 +32,7 @@ describe('Test STRP Contract', function() {
             await expect(
                 strpContract
                 .connect(addr1)
-                .mint(addr2.address, 100))
+                .mintp(addr2.address, 100))
                 .to.be.revertedWithCustomError(
                     strpContract,
                     "OwnableUnauthorizedAccount"
@@ -46,7 +46,7 @@ describe('Test STRP Contract', function() {
             await expect(
                 strpContract
                 .connect(owner)
-                .mint(addr3.address, 0))
+                .mintp(addr3.address, 0))
                 .to.be.revertedWith(
                     'You must enter a positif ammount'
                 )
@@ -57,7 +57,7 @@ describe('Test STRP Contract', function() {
             await expect(
                 strpContract
                 .connect(owner)
-                .mint(addr3.address, 0))
+                .mintp(addr3.address, 0))
                 .to.be.revertedWith(
                     'You must enter a positif ammount'
                 )
@@ -68,7 +68,7 @@ describe('Test STRP Contract', function() {
             await expect(
                 strpContract
                 .connect(owner)
-                .mint(addr2.address, 1000))
+                .mintp(addr2.address, 1000))
                 .to.emit(
                     strpContract,
                     'Minted',
@@ -129,6 +129,70 @@ describe('Test STRP Contract', function() {
                     1000
                 )
         })
+    })
+
+    describe('Testing burn function', function() {
+        beforeEach(async function() {
+            [owner, addr1, addr2, addr3] = await ethers.getSigners();
+            let contract = await ethers.getContractFactory('STRP');
+            strpContract = await contract.deploy();
+            await strpContract.mintp(addr3.address, 50);
+            //await console.log(stryContract.balanceOf(addr3.addres));
+        })
+
+        it('should NOT burn in STRP smart contract if NOT the owner', async function() {
+            //console.log("Calls the mint function  with " + addr1.address + " to add 100 STRP  to " + addr2.address);
+            
+            await expect(
+                strpContract
+                .connect(addr1)
+                .burnp(addr2.address, 100))
+                .to.be.revertedWithCustomError(
+                    strpContract,
+                    "OwnableUnauthorizedAccount"
+                ).withArgs(
+                    addr1.address
+                )
+        })
+
+        it('should NOT burn is the amount is not > 0', async function() {
+            
+            await expect(
+                strpContract
+                .connect(owner)
+                .burnp(addr3.address, 0))
+                .to.be.revertedWith(
+                    'You must enter a positif ammount'
+                )
+        })
+
+        it('should burn  the amount 10 STRP', async function() {
+            
+            await expect(
+                strpContract
+                .connect(owner)
+                .burnp(addr3.address, 1000))
+                .to.be.revertedWith(
+                    "You can't burn more than you have."
+                )
+        })
+
+        it('should emit a Burned event after burning  successfully', async function() {
+
+            await expect(
+                strpContract
+                .connect(owner)
+                .burnp(addr3.address, 10))
+                .to.emit(
+                    strpContract,
+                    'Burned',
+                )
+                .withArgs(
+                    addr3.address,
+                    10
+                )
+        })
+
     })
 
 })

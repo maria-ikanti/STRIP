@@ -19,7 +19,7 @@ contract STRP is ERC20, Ownable {
 	@param _recipient receiver address
 	@param _amount to be minted
 	 */
-	function mintp(address _recipient, uint _amount) external {
+	function mintp(address _recipient, uint _amount) external onlyOwner{
 		require(_amount>0, "You must enter a positif ammount");
 		_mint(_recipient, _amount);
 		console.log('mintp ', _recipient, ' ', _amount);
@@ -31,9 +31,9 @@ contract STRP is ERC20, Ownable {
 	@param _recipient receiver address
 	@param _amount to be burned
 	 */
-	function burnp(address _recipient, uint _amount) external {
+	function burnp(address _recipient, uint _amount) external onlyOwner{
 		require(_amount>0, "You must enter a positif ammount");
-		require(_amount<=balanceOf(_recipient), "You canno't burn more than you have.");
+		require(_amount<=balanceOf(_recipient), "You can't burn more than you have.");
 		_burn(_recipient, _amount);
 		console.log('mintp ', _recipient, ' ', _amount);
 		emit Burned(_recipient, _amount);
@@ -51,7 +51,7 @@ contract STRP is ERC20, Ownable {
 	}
 
 	/** @notice Recevie implementation for security reasons */
-	receive() external payable {}
+	//receive() external payable {}
 	/** @notice Fallback implementation for security reasons */
-	fallback() external payable {}
+	//fallback() external payable {}
 }
