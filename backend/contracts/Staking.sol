@@ -51,11 +51,12 @@ contract Staking is ReentrancyGuard, Ownable {
     // Total deposited amount by account
     mapping(address => uint) private _balances;
 
-    constructor(address _yeldsToken, address _stakingToken, address _strpToken, address _stryToken) Ownable(msg.sender) {
+    constructor(address _yeldsToken, address _stakingToken) Ownable(msg.sender) {
+    //constructor(address _yeldsToken, address _stakingToken, address _strpToken, address _stryToken) Ownable(msg.sender) {
         yeldsToken = IERC20(_yeldsToken);
         stakingToken = IERC20(_stakingToken);
-        strpToken = IERC20(_strpToken);
-        stryToken = IERC20(_stryToken);
+        //strpToken = IERC20(_strpToken);
+        //stryToken = IERC20(_stryToken);
         //, uint256 _yeldRate, uint256 _yeldDuration
        // yeldRate = _yeldRate;
        // yeldDuration= _yeldDuration;

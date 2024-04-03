@@ -16,14 +16,15 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 
 //import { sepolia } from '@/utils/sepolia';
-import { hardhat } from 'wagmi/chains';
+import { sepolia } from 'wagmi/chains';
+//import { sepolia } from '@/utils/sepolia';
 
 const { wallets } = getDefaultWallets();
 
 const WALLET_CONNECT_ID = process.env.NEXT_PUBLIC_WALLET_CONNECT || "";
 
 const config = getDefaultConfig({
-  appName: "DefiStripAppli",
+  appName: "Strip",
   projectId: WALLET_CONNECT_ID,
   wallets: [
       ...wallets,
@@ -32,7 +33,7 @@ const config = getDefaultConfig({
           wallets: [argentWallet, trustWallet, ledgerWallet],
       },
   ],
-  chains: [hardhat],
+  chains: [sepolia],
   ssr: true,
 });
 

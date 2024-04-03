@@ -23,7 +23,7 @@ const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "";
 
 module.exports = {
   // Spécifie le réseau par défaut pour Hardhat, qui est défini sur "hardhat".
-  defaultNetwork: "sepolia",
+  defaultNetwork: "hardhat",
   // Définit les configurations pour différents réseaux. Dans cet exemple, 
   // il y a un réseau "sepolia" (chaine de blocs fictive) et un réseau "localhost"
   // pour le développement en local.

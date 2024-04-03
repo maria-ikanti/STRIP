@@ -61,7 +61,7 @@ const Stake = () => {
     account: address
   });
 
-  const { data: stryBalanceGet, error: stryBalanceError, isPending: stryBalancePending, refetch: stryBalanceRefetch } = useReadContract({
+  /*const { data: stryBalanceGet, error: stryBalanceError, isPending: stryBalancePending, refetch: stryBalanceRefetch } = useReadContract({
     // adresse du contrat
     address: stryTokenAddress,
     // abi du contrat
@@ -84,7 +84,7 @@ const Stake = () => {
     args : [address],
     // qui appelle la fonction ?
     account: address
-  });
+  });*/
 
   const { data: contractBalanceGet, error: contractBlanceError, isPending: contractBalancePending, refetch: contractBalanceRefetch } = useReadContract({
     // adresse du contrat
@@ -134,7 +134,7 @@ const Stake = () => {
                     isClosable: true,
                 });
             }else{
-                writeContract({
+           /*     writeContract({
                     address: stryTokenAddress,
                     abi: stryTokenAbi,
                     functionName: 'mint',
@@ -147,7 +147,7 @@ const Stake = () => {
                     functionName: 'mint',
                     args: [address, tokenAmount],
                     account: address
-                })
+                })*/
                 writeContract({
                     address: stakingContractAddress,
                     abi: stakingContractAbi,
@@ -177,7 +177,7 @@ const Stake = () => {
       //await getEvents();
   }
 
-  useEffect(() => {
+ /* useEffect(() => {
       if(isSuccess) {
           toast({
               title: "The staking was confirmed in the blockchain with success",
@@ -188,7 +188,7 @@ const Stake = () => {
          // refetchEverything();
           setTokenAmount('');
       }
-  }, [isSuccess, errorConfirmation])
+  }, [isSuccess, errorConfirmation])*/
     
   return (
     <>  
@@ -213,22 +213,7 @@ const Stake = () => {
                 <Text color="orange">Your current staken STRU amount is: {contractBalanceGet?.toString()}</Text>
             )}
        </Box>
-       <Box ml="2rem">
-            {/* Est ce qu'on est en train de récupérer la balance en STRU ? */}
-            {strpBalancePending ? (
-                <Spinner />
-            ) : (
-                <Text color='tomato'>Your current STRP balance is: {strpBalanceGet?.toString()}</Text>
-            )}
-       </Box>
-       <Box ml="2rem">
-            {/* Est ce qu'on est en train de récupérer la balance en STRU ? */}
-            {stryBalancePending ? (
-                <Spinner />
-            ) : (
-                <Text color='tomato'>Your current STRY balance is: {stryBalanceGet?.toString()}</Text>
-            )}
-       </Box>
+       
 
         <Flex mt="2rem" mb="2rem">
             <Input id='amnt' w='20rem' backgroundColor="#CBC49B" placeholder='Amount to stake' ml="1rem"  value={tokenAmount} onChange={(e) => setTokenAmount(e.target.value)} />

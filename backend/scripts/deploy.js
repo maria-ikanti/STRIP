@@ -33,7 +33,8 @@ async function main() {
   );
 
 
-  const staking = await hre.ethers.deployContract("Staking", [yeldsTokenAddr, stakingTokenAddr, strpTokenAddr, stryTokenAddr]);
+  //const staking = await hre.ethers.deployContract("Staking", [yeldsTokenAddr, stakingTokenAddr, strpTokenAddr, stryTokenAddr]);
+  const staking = await hre.ethers.deployContract("Staking", [yeldsTokenAddr, stakingTokenAddr]);
 
   await staking.waitForDeployment();
   const stAddr = staking.target;
