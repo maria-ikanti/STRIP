@@ -4,8 +4,8 @@ import { useEffect, useState } from 'react';
 // On importe les données de contrats
 import { stakingContractAddress, stakingContractAbi } from '@/constants';
 import { struTokenAddress, struTokenAbi } from '@/constants'
-import { strpTokenAddress, strpTokenAbi } from '@/constants';
-import { stryTokenAddress, stryTokenAbi } from '@/constants'
+//import { strpTokenAddress, strpTokenAbi } from '@/constants';
+//import { stryTokenAddress, stryTokenAbi } from '@/constants'
 import { useReadContract, useAccount, useWriteContract, useWaitForTransactionReceipt, useWatchContractEvent } from 'wagmi';
 import {Alert, AlertIcon, Box, useToast, Flex, Heading, Spinner, Text, Input, Button} from '@chakra-ui/react';
 import { isAddress } from "viem";

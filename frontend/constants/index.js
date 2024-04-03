@@ -16,16 +16,6 @@ export const stakingContractAbi=[
         "internalType": "address",
         "name": "_stakingToken",
         "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_strpToken",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_stryToken",
-        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
