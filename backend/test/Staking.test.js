@@ -278,6 +278,20 @@ describe('Test Staking Contract', function() {
             //await stakingContract.setYeldAmount(300);
         })
 
+        it('should revert setYeldAmount if not the owner', async function() {
+
+            await expect(
+                stakingContract
+                .connect(addr1)
+                .setYeldAmount(300))
+                .to.be.revertedWithCustomError(
+                    stakingContract,
+                    "OwnableUnauthorizedAccount"
+                ).withArgs(
+                    addr1.address
+                )
+        })
+
         it('should test the if branch of setYeldAmount', async function() {
 
             await stakingContract.setYeldAmount(300);
@@ -292,6 +306,17 @@ describe('Test Staking Contract', function() {
                 )
                 .withArgs(
                     300
+                )
+        })
+
+        it('should test the if branch of setYeldAmount', async function() {
+
+            await expect(
+                stakingContract
+                .connect(owner)
+                .setYeldAmount(30000))
+                .to.be.revertedWith(
+                    'Provided amount too high'
                 )
         })
 
@@ -393,5 +418,28 @@ describe('Test Staking Contract', function() {
         })
     })
 
+    describe('Testing setYeldDuration function', function() {
+        beforeEach(async function() {
+            [owner, addr1, addr2, addr3] = await ethers.getSigners();
+            let struCont = await ethers.getContractFactory('STRU');
+            struContract = await struCont.deploy();
+            let contract = await ethers.getContractFactory('Staking',[struContract.target, struContract.target]);
+            console.log(struContract.target);
+            stakingContract = await contract.deploy(struContract.target, struContract.target);
+        })
 
+        it('should revert if not the owner', async function() {
+
+            await expect(
+                stakingContract
+                .connect(addr1)
+                .setYeldDuration(30))
+                .to.be.revertedWithCustomError(
+                    stakingContract,
+                    "OwnableUnauthorizedAccount"
+                ).withArgs(
+                    addr1.address
+                )
+        })
+    })
 })

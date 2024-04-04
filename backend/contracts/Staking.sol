@@ -65,7 +65,6 @@ contract Staking is ReentrancyGuard, Ownable {
     modifier updateYeld(address _account) {
         yeldsPerTokenStored = yeldPerToken();
         lastUpdateTime = lastTimeYeldApplicable();
-        require (_account != address(0), "Must be a valid address");
         // Update the gains table for the given account
         yelds[_account] = earned(_account);
         // Update the payed yelds for the given user
@@ -77,7 +76,6 @@ contract Staking is ReentrancyGuard, Ownable {
     /// @return uint256 The amount of the tokens reward
     function yeldPerToken() public view returns (uint256) {
         if (_totalSupply == 0) {
-            console.log('yeldPerToken= dans le if', _totalSupply, ' ', yeldsPerTokenStored);
             return yeldsPerTokenStored;
         }
         // Since the last time we made an update
@@ -119,7 +117,7 @@ contract Staking is ReentrancyGuard, Ownable {
     @notice Return the balance in SRTP of the sender
     @return uint256 the balance in SRTP
      */
-    function balanceOfStrp() external nonReentrant returns (uint256){
+    function balanceOfStrp() external view returns (uint256){
         return strpToken.balanceOf(msg.sender);
     }
 
@@ -127,7 +125,7 @@ contract Staking is ReentrancyGuard, Ownable {
     @notice Return the balance in SRTY of the sender
     @return uint256 the balance in SRTY
      */
-    function balanceOfStry() external nonReentrant returns (uint256){
+    function balanceOfStry() external view returns (uint256){
         return stryToken.balanceOf(msg.sender);
     }
 
@@ -156,7 +154,7 @@ contract Staking is ReentrancyGuard, Ownable {
     @notice the main stripping function. mints STRP and STRY for the given account after staking
     @param _amount the amount of the tokens to be minted
      */
-    function strip(address _account, uint _amount) internal nonReentrant {
+    function strip(address _account, uint _amount) internal {
         strpToken.mintp(_account, _amount);
         stryToken.minty(_account, _amount);
     }
@@ -165,7 +163,7 @@ contract Staking is ReentrancyGuard, Ownable {
     @notice the main redeeming (remembrement) function. burns STRP and STRY for the given account after withdrawing
     @param _amount the amount of the tokens to be burned
      */
-    function redeem(address _account, uint _amount) internal nonReentrant {
+    function redeem(address _account, uint _amount) internal {
         strpToken.burnp(_account, _amount);
         stryToken.burny(_account, _amount);
     }
@@ -174,7 +172,6 @@ contract Staking is ReentrancyGuard, Ownable {
     @notice  Claim the yelds */
     function claimYeld() public nonReentrant updateYeld(msg.sender){
         uint256 yeld = yelds[msg.sender];
-        console.log('claim  : yelds ', yeld);
         require (yeld>0, "You have no yelds");
         yelds[msg.sender] = 0;
         yeldsToken.safeTransfer(msg.sender, yeld);
