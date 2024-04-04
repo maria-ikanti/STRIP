@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for contracts/Staking.sol</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">contracts/</a> Staking.sol
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>35/35</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">83.33% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>25/30</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>17/17</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>54/54</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18×</span>
+<span class="cline-any cline-yes">18×</span>
+<span class="cline-any cline-yes">18×</span>
+<span class="cline-any cline-yes">18×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">50×</span>
+<span class="cline-any cline-yes">40×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">35×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-yes">13×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// SPDX-License-Identifier: MIT
+&nbsp;
+pragma solidity ^0.8.24;
+&nbsp;
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "./STRP.sol";
+import "./STRY.sol";
+import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+&nbsp;
+/* ========== EVENTS ========== */
+&nbsp;
+event YeldAdded(uint256 reward);
+event Staked(address indexed user, uint256 amount);
+event Withdrawn(address indexed user, uint256 amount);
+event YeldPaid(address indexed user, uint256 reward);
+event YeldDurationUpdated(uint256 newDuration);
+event Recovered(address token, uint256 amount);
+event Exit(address sender, uint256 amount);
+&nbsp;
+contract Staking is ReentrancyGuard, Ownable {
+&nbsp;
+    using SafeERC20 for IERC20;
+&nbsp;
+    /* ========== STATE VARIABLES ========== */
+&nbsp;
+    IERC20 public yeldsToken;
+    IERC20 public stakingToken;
+    STRP public strpToken;
+    STRY public stryToken;
+    uint256 public periodFinish; // maturity
+    uint256 public yeldRate;
+    uint256 public yeldDuration = 1 minutes;
+    uint256 public lastUpdateTime;
+    uint256 public yeldsPerTokenStored;
+&nbsp;
+&nbsp;
+    /// @notice Yelds already payed for each staked token
+    mapping(address =&gt; uint) public userYeldsPerTokenPaid;
+    // Yelds earned by one account
+    mapping(address =&gt; uint) public yelds;
+&nbsp;
+    /// @notice total supply of the STRU token
+    uint private _totalSupply;
+    // Total deposited amount by account
+    mapping(address =&gt; uint) private _balances;
+&nbsp;
+    /**
+    @notice This is the staking contract constuctor
+    @param _yeldsToken The address of the ERC20 token to be staked
+    @param _yeldsToken The address of the ERC20 token of the reward
+     */
+    constructor(address _yeldsToken, address _stakingToken) Ownable(msg.sender) {
+    //constructor(address _yeldsToken, address _stakingToken, address _strpToken, address _stryToken) Ownable(msg.sender) {
+        yeldsToken = IERC20(_yeldsToken);
+        stakingToken = IERC20(_stakingToken);
+        strpToken = new STRP();
+        stryToken = new STRY();
+    }
+&nbsp;
+    /**
+    @notice A modifier to be executed on any stake, deposit or withdraw 
+    @param _account The account to be reset
+     */
+    modifier updateYeld(address _account) {
+        yeldsPerTokenStored = yeldPerToken();
+        lastUpdateTime = lastTimeYeldApplicable();
+        // Update the gains table for the given account
+        yelds[_account] = earned(_account);
+        // Update the payed yelds for the given user
+        userYeldsPerTokenPaid[_account] = yeldsPerTokenStored;
+        _;
+    }
+&nbsp;
+    /// @notice returns the yelds earned for each token staked. Avec intérêts composés
+    /// @return uint256 The amount of the tokens reward
+    function yeldPerToken() public view returns (uint256) {
+        if (_totalSupply == 0) {
+            return yeldsPerTokenStored;
+        }
+        // Since the last time we made an update
+        return yeldsPerTokenStored + (yeldRate *(lastTimeYeldApplicable() - lastUpdateTime)* 1e18) / _totalSupply;
+    }
+&nbsp;
+    /** @notice The last time when we are supposed to give a yeld. If periodFinish, then it means that the last time is in the past. Else, it is the last block.timestamp
+    @return uint256 period (datetime)
+    */
+    function lastTimeYeldApplicable() public view returns (uint256) {
+        return block.timestamp &lt; periodFinish ? block.timestamp : periodFinish;
+    }
+&nbsp;
+    /**
+    @notice Returns the total earned by a given account 
+    @param _account the account to be applied
+     */
+    function earned(address _account) public view returns (uint256) {
+        return (_balances[_account]*(yeldPerToken()-userYeldsPerTokenPaid[_account]))/1e18 + yelds[_account];
+    }
+&nbsp;
+    /**
+    @notice returns the total supply of the ERC20 token
+    @return uint256 the total supply
+     */
+    function totalSupply() external view returns (uint256) {
+        return _totalSupply;
+    }
+&nbsp;
+    /**
+    @notice Return the balance of an account
+    @return uint256 the balance of the account
+     */
+    function balanceOf(address _account) external view returns (uint256) {
+        return _balances[_account];
+    }
+&nbsp;
+    /**
+    @notice Return the balance in SRTP of the sender
+    @return uint256 the balance in SRTP
+     */
+    function balanceOfStrp() external view returns (uint256){
+        return strpToken.balanceOf(msg.sender);
+    }
+&nbsp;
+    /**
+    @notice Return the balance in SRTY of the sender
+    @return uint256 the balance in SRTY
+     */
+    function balanceOfStry() external view returns (uint256){
+        return stryToken.balanceOf(msg.sender);
+    }
+&nbsp;
+    /**
+    @notice Gets the yeld for a given duration
+    @return uint256 the yeld for a given duration
+     */
+    function getYeldForDuration() external view returns (uint256) {
+        return yeldRate*yeldDuration;
+    }
+&nbsp;
+    /**
+    @notice the main staking function. Stakes the ERC20 token for a given address in the smart contact
+    @param _amount the amount of the tokens to be staked
+     */
+    function stake(uint _amount) external <span class="missing-if-branch" title="else path not taken" >E</span>updateYeld(msg.sender){
+        require(_amount &gt; 0, "Amount to be staked must be &gt; 0");
+        _totalSupply = _totalSupply + _amount;
+        _balances[msg.sender] = _balances[msg.sender] + _amount;
+        stakingToken.safeTransferFrom(msg.sender, address(this), _amount);
+        strip(msg.sender, _amount);
+        emit Staked(msg.sender, _amount);
+    }
+&nbsp;
+    /**
+    @notice the main stripping function. mints STRP and STRY for the given account after staking
+    @param _amount the amount of the tokens to be minted
+     */
+    function strip(address _account, uint _amount) internal {
+        strpToken.mintp(_account, _amount);
+        stryToken.minty(_account, _amount);
+    }
+&nbsp;
+    /**
+    @notice the main redeeming (remembrement) function. burns STRP and STRY for the given account after withdrawing
+    @param _amount the amount of the tokens to be burned
+     */
+    function redeem(address _account, uint _amount) internal {
+        strpToken.burnp(_account, _amount);
+        stryToken.burny(_account, _amount);
+    }
+&nbsp;
+    /**
+    @notice  Claim the yelds */
+    function claimYeld() public <span class="missing-if-branch" title="else path not taken" >E</span>nonReentrant <span class="missing-if-branch" title="else path not taken" >E</span>updateYeld(msg.sender){
+        uint256 yeld = yelds[msg.sender];
+        require (yeld&gt;0, "You have no yelds");
+        yelds[msg.sender] = 0;
+        yeldsToken.safeTransfer(msg.sender, yeld);
+        emit YeldPaid(msg.sender, yeld);
+    }
+    
+    /**
+    @notice Allows the user to withdraw the staked tokens
+    @param _amount the amount to be withdrawn
+     */
+    function withdraw(uint _amount) public <span class="missing-if-branch" title="else path not taken" >E</span>updateYeld(msg.sender){
+        require(_amount &gt; 0, "Must withraw a positive value");
+        uint256 tempBalance = _balances[msg.sender];
+        require (_amount &lt;= tempBalance, "You don't have enough tokens");
+        _totalSupply = _totalSupply - _amount;
+        _balances[msg.sender] = _balances[msg.sender] - _amount ;
+        redeem(msg.sender, _amount);
+        stakingToken.safeTransfer(msg.sender, _amount);
+        emit Withdrawn(msg.sender, _amount);
+    }
+&nbsp;
+    /**
+    @notice Sets the amount of yelds. Used to init the contract
+    @param _amount the amount to be withdrawn
+     */
+    function setYeldAmount(uint256 _amount) external onlyOwner <span class="missing-if-branch" title="else path not taken" >E</span>updateYeld(msg.sender){
+        if (block.timestamp &gt;= periodFinish) {
+            yeldRate = _amount / yeldDuration;
+        } else {
+            uint256 remaining = periodFinish - block.timestamp;
+            uint256 leftover = remaining * yeldRate;
+            yeldRate = (_amount + leftover)/yeldDuration;
+        }
+        uint balance = yeldsToken.balanceOf(address(this));
+        require(yeldRate &lt;= balance / yeldDuration, "Provided amount too high");
+        lastUpdateTime = block.timestamp;
+        periodFinish = block.timestamp + yeldDuration;
+        emit YeldAdded(_amount);
+    } 
+&nbsp;
+    /**
+    @notice Sets the yeld duration
+    @param _yeldDuration the duration in seconds
+     */
+    function setYeldDuration(uint256 _yeldDuration) external onlyOwner {
+        yeldDuration = _yeldDuration;
+        emit YeldDurationUpdated(yeldDuration);
+    } 
+}</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Thu Apr 04 2024 11:30:22 GMT+0200 (heure d’été d’Europe centrale)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>
