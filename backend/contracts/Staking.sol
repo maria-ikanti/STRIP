@@ -100,17 +100,6 @@ contract Staking is ReentrancyGuard, Ownable {
     }
 
     /**
-    @notice  Claim the yelds */
-    function claimYeld() public nonReentrant updateYeld(msg.sender){
-        uint256 yeld = yelds[msg.sender];
-        console.log('claim  : yelds ', yeld);
-        require (yeld>0, "You have no yelds");
-        yelds[msg.sender] = 0;
-        yeldsToken.safeTransfer(msg.sender, yeld);
-        emit YeldPaid(msg.sender, yeld);
-    }
-
-    /**
     @notice returns the total supply of the ERC20 token
     @return uint256 the total supply
      */
@@ -154,7 +143,7 @@ contract Staking is ReentrancyGuard, Ownable {
     @notice the main staking function. Stakes the ERC20 token for a given address in the smart contact
     @param _amount the amount of the tokens to be staked
      */
-    function stake(uint _amount) external nonReentrant updateYeld(msg.sender){
+    function stake(uint _amount) external updateYeld(msg.sender){
         require(_amount > 0, "Amount to be staked must be > 0");
         _totalSupply = _totalSupply + _amount;
         _balances[msg.sender] = _balances[msg.sender] + _amount;
@@ -180,12 +169,23 @@ contract Staking is ReentrancyGuard, Ownable {
         strpToken.burnp(_account, _amount);
         stryToken.burny(_account, _amount);
     }
+
+    /**
+    @notice  Claim the yelds */
+    function claimYeld() public nonReentrant updateYeld(msg.sender){
+        uint256 yeld = yelds[msg.sender];
+        console.log('claim  : yelds ', yeld);
+        require (yeld>0, "You have no yelds");
+        yelds[msg.sender] = 0;
+        yeldsToken.safeTransfer(msg.sender, yeld);
+        emit YeldPaid(msg.sender, yeld);
+    }
     
     /**
     @notice Allows the user to withdraw the staked tokens
     @param _amount the amount to be withdrawn
      */
-    function withdraw(uint _amount) public nonReentrant updateYeld(msg.sender){
+    function withdraw(uint _amount) public updateYeld(msg.sender){
         require(_amount > 0, "Must withraw a positive value");
         uint256 tempBalance = _balances[msg.sender];
         require (_amount <= tempBalance, "You don't have enough tokens");

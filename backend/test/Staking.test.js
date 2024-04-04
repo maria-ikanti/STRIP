@@ -14,9 +14,6 @@ describe('Test Staking Contract', function() {
             let contract = await ethers.getContractFactory('Staking',[struContract.target, struContract.target]);
             console.log(struContract.target);
             stakingContract = await contract.deploy(struContract.target, struContract.target);
-            const today = new Date();
-            const durationToSet=today.getTime()+60; // one minute
-            const duration = await stakingContract.setYeldDuration(durationToSet);
         })
 
        it('should deploy the smart contract', async function() {
@@ -30,24 +27,24 @@ describe('Test Staking Contract', function() {
             [owner, addr1, addr2, addr3] = await ethers.getSigners();
             let struCont = await ethers.getContractFactory('STRU');
             struContract = await struCont.deploy();
-            const signer = await ethers.provider.getSigner();
-            let contract = await ethers.getContractFactory('Staking',[struContract.target, struContract.target], signer);
-            //console.log(struContract.target);
+            let contract = await ethers.getContractFactory('Staking',[struContract.target, struContract.target]);
+            console.log(struContract.target);
             stakingContract = await contract.deploy(struContract.target, struContract.target);
-            stakeContr = await stakingContract.waitForDeployment();
-            const mint = await struContract.mint(addr1.address, 2000);
-            await struContract.increaseAllow(addr1.address, stakingContract.target, 1000);
-            const allow = await struContract.allowance(addr1.address,stakingContract.target);
-            const today = new Date();
-            const durationToSet=today.getTime()+60; // one minute
-            const duration = await stakingContract.setYeldDuration(durationToSet);
-            console.log(duration);
+            await struContract.mint(addr1.address,10000);
+            const strContractAddress = stakingContract.target;
+            await struContract.mint(strContractAddress,10000);
+            const allowanceAvant = await struContract.allowance(addr1.address, strContractAddress);
+            console.log('allowanceAvant = ', allowanceAvant);
+            await struContract.increaseAllow(addr1.address, strContractAddress, 10000);
+            const allowanceApres = await struContract.allowance(addr1.address, strContractAddress);
+            console.log('allowanceApres = ', allowanceApres);
+            await stakingContract.setYeldDuration(60);
+            await stakingContract.setYeldAmount(300);
         })
 
         it('should NOT stake if the amount is not > 0', async function() {
-            
             await expect(
-                stakeContr
+                stakingContract
                 .connect(owner)
                 .stake(0))
                 .to.be.revertedWith(
@@ -55,38 +52,40 @@ describe('Test Staking Contract', function() {
                 )
         })
 
-       /* it('should emit a Stake event after staking  successfully', async function() {
-
+        it('should emit a Stake event after staking  successfully', async function() {
             await expect(
-                stakeContr
-                .connect(addr1.address)
-                .stake(1000))
+                stakingContract
+                .connect(addr1)
+                .stake(100))
                 .to.emit(
-                    stakeContr,
+                    stakingContract,
                     'Staked',
                 )
                 .withArgs(
                     addr1.address,
-                    1000
+                    100
                 )
-        })*/
-
+        })
     })
 
-   /* describe('Testing withdraw function', function() {
+    describe('Testing withdraw function', function() {
         beforeEach(async function() {
             [owner, addr1, addr2, addr3] = await ethers.getSigners();
             let struCont = await ethers.getContractFactory('STRU');
             struContract = await struCont.deploy();
-            let contract = await ethers.getContractFactory('Staking',[struContract.target, struContract.target], owner);
+            let contract = await ethers.getContractFactory('Staking',[struContract.target, struContract.target]);
+            console.log(struContract.target);
             stakingContract = await contract.deploy(struContract.target, struContract.target);
-            const mint = await struContract.mint(addr1.address, 2000);
-            await struContract.increaseAllow(owner, stakingContract.target, 1000);
-            const allow = await struContract.allowance(owner,stakingContract.target);
-            await stakingContract.stake(500);
-            const today = new Date();
-            const durationToSet=today.getTime()+60; // one minute
-            const duration = await stakingContract.setYeldDuration(durationToSet);
+            await struContract.mint(addr1.address,10000);
+            const strContractAddress = stakingContract.target;
+            await struContract.mint(strContractAddress,10000);
+            const allowanceAvant = await struContract.allowance(addr1.address, strContractAddress);
+            console.log('allowanceAvant = ', allowanceAvant);
+            await struContract.increaseAllow(addr1.address, strContractAddress, 10000);
+            const allowanceApres = await struContract.allowance(addr1.address, strContractAddress);
+            console.log('allowanceApres = ', allowanceApres);
+            await stakingContract.setYeldDuration(60);
+            await stakingContract.setYeldAmount(300);
         })
 
         it('should NOT withdraw if the amount is not > 0', async function() {
@@ -96,7 +95,7 @@ describe('Test Staking Contract', function() {
                 .connect(owner)
                 .withdraw(0))
                 .to.be.revertedWith(
-                    'Must withrow a positive value'
+                    'Must withraw a positive value'
                 )
         })
 
@@ -112,55 +111,87 @@ describe('Test Staking Contract', function() {
                 )
         })
 
-      /*  it('should emit a Withdrawn event after withdrawing  successfully', async function() {
+        it('should emit a Withdrawn event after withdrawing  successfully', async function() {
 
             await expect(
                 stakingContract
-                .connect(addr1.address)
+                .connect(addr1)
+                .stake(100))
+                .to.emit(
+                    stakingContract,
+                    'Staked',
+                )
+                .withArgs(
+                    addr1.address,
+                    100
+                )
+                
+            const tempBalance = await stakingContract.balanceOf(addr1.address);
+            console.log('tempBalance ', tempBalance);
+
+            await expect(
+                stakingContract
+                .connect(addr1)
                 .withdraw(3))
                 .to.emit(
                     stakingContract,
                     'Withdrawn',
                 )
                 .withArgs(
-                    owner,
+                    addr1.address,
                     3
                 )
         })
 
-    })*/
+    })
 
     describe('Testing claimYeld function', function() {
         beforeEach(async function() {
             [owner, addr1, addr2, addr3] = await ethers.getSigners();
             let struCont = await ethers.getContractFactory('STRU');
             struContract = await struCont.deploy();
-            let contract = await ethers.getContractFactory('Staking',[struContract.target, struContract.target], addr1);
-            //console.log(struContract.target);
+            let contract = await ethers.getContractFactory('Staking',[struContract.target, struContract.target]);
+            console.log(struContract.target);
             stakingContract = await contract.deploy(struContract.target, struContract.target);
-            stakeContr = await stakingContract.waitForDeployment();
-            const mint = await struContract.mint(addr1.address, 2000);
-            await struContract.increaseAllow(addr1.address, stakingContract.target, 1000);
-            const allow = await struContract.allowance(addr1.address,stakingContract.target);
-            const today = new Date();
-            const durationToSet=today.getTime()+60; // one minute
+            await struContract.mint(addr1.address,10000);
+            const strContractAddress = stakingContract.target;
+            await struContract.mint(strContractAddress,10000);
+            const allowanceAvant = await struContract.allowance(addr1.address, strContractAddress);
+            console.log('allowanceAvant = ', allowanceAvant);
+            await struContract.increaseAllow(addr1.address, strContractAddress, 10000);
+            const allowanceApres = await struContract.allowance(addr1.address, strContractAddress);
+            console.log('allowanceApres = ', allowanceApres);
+            await stakingContract.setYeldDuration(60);
+            await stakingContract.setYeldAmount(300);
 
-            const duration = await expect(
-                stakeContr
-                .connect(owner)
-                .setYeldDuration(durationToSet))
+            await expect(
+                stakingContract
+                .connect(addr1)
+                .stake(100))
                 .to.emit(
-                    stakeContr,
-                    'YeldDurationUpdated',
+                    stakingContract,
+                    'Staked',
                 )
                 .withArgs(
-                    durationToSet
-                ) 
-            //const duration = 0; stakeContr.setYeldDuration(durationToSet);
-            console.log(durationToSet);
+                    addr1.address,
+                    100
+                )
+
+            await expect(
+                stakingContract
+                .connect(addr1)
+                .stake(100))
+                .to.emit(
+                    stakingContract,
+                    'Staked',
+                )
+                .withArgs(
+                    addr1.address,
+                    100
+                )
         })
 
-       /*  it('should NOT return yelds if the amount is not > 0', async function() {
+        it('should NOT return yelds if the amount is not > 0', async function() {
             
             await expect(
                 stakingContract
@@ -169,164 +200,198 @@ describe('Test Staking Contract', function() {
                 .to.be.revertedWith(
                     'You have no yelds'
                 )
-        })*/
+        })
 
-      /*  it('should emit a Stake event after staking  successfully', async function() {
+        it('should emit a YeldPaid event after paying the yelds  successfully', async function() {
 
             await expect(
-                stakeContr
-                .connect(owner)
+                stakingContract
+                .connect(addr1)
                 .claimYeld())
                 .to.emit(
-                    stakeContr,
+                    stakingContract,
                     'YeldPaid',
                 )
                 .withArgs(
                     addr1.address,
-                    2
+                    10
                 )
-        })*/
+        })
 
     })
 
-    describe('Testing earned function', function() {
+
+    describe('Testing setYeldDuration function', function() {
         beforeEach(async function() {
             [owner, addr1, addr2, addr3] = await ethers.getSigners();
             let struCont = await ethers.getContractFactory('STRU');
             struContract = await struCont.deploy();
-            let contract = await ethers.getContractFactory('Staking',[struContract.target, struContract.target], addr1);
+            let contract = await ethers.getContractFactory('Staking',[struContract.target, struContract.target]);
+            console.log(struContract.target);
             stakingContract = await contract.deploy(struContract.target, struContract.target);
-            stakeContr = await stakingContract.waitForDeployment();
-            const mint = await struContract.mint(addr1.address, 2000);
-            await struContract.increaseAllow(addr1.address, stakingContract.target, 1000);
-            const allow = await struContract.allowance(addr1.address,stakingContract.target);
-        })
-
-        it('should return an error if the amount is = 0', async function() {
-            
-          /*  await expect(
-                stakingContract
-                .connect(owner)
-                .earned(addr1.address))
-                .to.be.revertedWith(
-                    'You  have no gain'
-                )*/
-        })
-
-
-
-      /*  it('to be defined', async function() {
-
-            const earnedAmount = await expect(
-                stakeContr
-                .connect(owner)
-                .earned(addr1.address));
-
-            console.log(earnedAmount);
-                
-        })*/
-        
-
-    })
-
-    describe('Testing exit function', function() {
-        beforeEach(async function() {
-            [owner, addr1, addr2, addr3] = await ethers.getSigners();
-            let struCont = await ethers.getContractFactory('STRU');
-            struContract = await struCont.deploy();
-            let contract = await ethers.getContractFactory('Staking',[struContract.target, struContract.target], addr1);
-            stakingContract = await contract.deploy(struContract.target, struContract.target);
-            stakeContr = await stakingContract.waitForDeployment();
-            const mint = await struContract.mint(addr1.address, 2000);
-            await struContract.increaseAllow(addr1.address, stakingContract.target, 1000);
-            const allow = await struContract.allowance(addr1.address,stakingContract.target);
-        })
-
-        it('should return an error if the amount is = 0', async function() {
-            
-          /*  await expect(
-                stakingContract
-                .connect(owner)
-                .earned(addr1.address))
-                .to.be.revertedWith(
-                    'You  have no gain'
-                )*/
-        })
-
-
-
-     /*   it('should shoud exit sucessfully', async function() {
-
-            await expect(
-                stakeContr
-                .connect(owner)
-                .exit())
-                .to.emit(
-                    stakeContr,
-                    'Exit',
-                )
-                .withArgs(
-                    owner,
-                    100
-                )
-        })*/
-        
-
-    })
-
-   /* describe('Testing setYeldDuration function', function() {
-        beforeEach(async function() {
-            [owner, addr1, addr2, addr3] = await ethers.getSigners();
-            let struCont = await ethers.getContractFactory('STRU');
-            struContract = await struCont.deploy();
-            let contract = await ethers.getContractFactory('Staking',[struContract.target, struContract.target, 3, 2], addr1);
-            //console.log(struContract.target);
-            stakingContract = await contract.deploy(struContract.target, struContract.target, 3, 2);
-            stakeContr = await stakingContract.waitForDeployment();
-            //const mint = await struContract.mint(addr1.address, 2000);
-            //await struContract.increaseAllow(addr1.address, stakingContract.target, 1000);
-            //const allow = await struContract.allowance(addr1.address,stakingContract.target);
-
-            
-        })
-
-        it('Should revert if  block.timestamp > periodFinish', async function() {
-            
-            const today = new Date();
-            //const durationToSet=today.getTime()+60; // one minute
-
-            const duration = await expect(
-                stakeContr
-                .connect(owner)
-                .setYeldDuration(1711911457046))
-                .to.be.revertedWith(
-                    'Previous yeld period must be complete before changing the duration for the new period'
-                )
-            //const duration = 0; stakeContr.setYeldDuration(durationToSet);
-            //console.log(durationToSet);
+            await struContract.mint(addr1.address,10000);
+            const strContractAddress = stakingContract.target;
+            await struContract.mint(strContractAddress,10000);
+            const allowanceAvant = await struContract.allowance(addr1.address, strContractAddress);
+            console.log('allowanceAvant = ', allowanceAvant);
+            await struContract.increaseAllow(addr1.address, strContractAddress, 10000);
+            const allowanceApres = await struContract.allowance(addr1.address, strContractAddress);
+            console.log('allowanceApres = ', allowanceApres);
+            await stakingContract.setYeldDuration(60);
+            await stakingContract.setYeldAmount(300);
         })
 
         it('Should emit a YeldDurationUpdated event after updating the yeld duration successfully ', async function() {
-
-            const today = new Date();
-            const durationToSet=today.getTime()+60; // one minute
             
-            const duration = await expect(
-                stakeContr
+            await expect(
+                stakingContract
                 .connect(owner)
-                .setYeldDuration(1711911785327))
+                .setYeldDuration(60))
                 .to.emit(
-                    stakeContr,
+                    stakingContract,
                     'YeldDurationUpdated',
                 )
                 .withArgs(
-                    durationToSet
+                    60
                 ) 
-            //const duration = 0; stakeContr.setYeldDuration(durationToSet);
-            console.log(durationToSet);
         })
 
-    })*/
+    })
+
+    describe('Testing setYeldAmount function', function() {
+        beforeEach(async function() {
+            [owner, addr1, addr2, addr3] = await ethers.getSigners();
+            let struCont = await ethers.getContractFactory('STRU');
+            struContract = await struCont.deploy();
+            let contract = await ethers.getContractFactory('Staking',[struContract.target, struContract.target]);
+            console.log(struContract.target);
+            stakingContract = await contract.deploy(struContract.target, struContract.target);
+            await struContract.mint(addr1.address,10000);
+            const strContractAddress = stakingContract.target;
+            await struContract.mint(strContractAddress,10000);
+            const allowanceAvant = await struContract.allowance(addr1.address, strContractAddress);
+            console.log('allowanceAvant = ', allowanceAvant);
+            await struContract.increaseAllow(addr1.address, strContractAddress, 10000);
+            const allowanceApres = await struContract.allowance(addr1.address, strContractAddress);
+            console.log('allowanceApres = ', allowanceApres);
+            await stakingContract.setYeldDuration(60);
+            //await stakingContract.setYeldAmount(300);
+        })
+
+        it('should test the if branch of setYeldAmount', async function() {
+
+            await stakingContract.setYeldAmount(300);
+
+            await expect(
+                stakingContract
+                .connect(owner)
+                .setYeldAmount(300))
+                .to.emit(
+                    stakingContract,
+                    'YeldAdded',
+                )
+                .withArgs(
+                    300
+                )
+        })
+
+        it('should test the else branch of setYeldAmount', async function() {
+
+            await stakingContract.setYeldAmount(300);
+
+            await expect(
+                stakingContract
+                .connect(owner)
+                .setYeldAmount(300))
+                .to.emit(
+                    stakingContract,
+                    'YeldAdded',
+                )
+                .withArgs(
+                    300
+                )
+        })
+    })
+
+    describe('Testing totalSupply function', function() {
+        beforeEach(async function() {
+            [owner, addr1, addr2, addr3] = await ethers.getSigners();
+            let struCont = await ethers.getContractFactory('STRU');
+            struContract = await struCont.deploy();
+            let contract = await ethers.getContractFactory('Staking',[struContract.target, struContract.target]);
+            console.log(struContract.target);
+            stakingContract = await contract.deploy(struContract.target, struContract.target);
+        })
+
+        it('should test the if branch of setYeldAmount', async function() {
+
+            await expect(
+                stakingContract
+                .connect(owner)
+                .totalSupply())
+                .not.to.be.reverted
+        })
+    })
+
+    describe('Testing balanceOfStrp function', function() {
+        beforeEach(async function() {
+            [owner, addr1, addr2, addr3] = await ethers.getSigners();
+            let struCont = await ethers.getContractFactory('STRU');
+            struContract = await struCont.deploy();
+            let contract = await ethers.getContractFactory('Staking',[struContract.target, struContract.target]);
+            console.log(struContract.target);
+            stakingContract = await contract.deploy(struContract.target, struContract.target);
+        })
+
+        it('should test the if branch of setYeldAmount', async function() {
+
+            await expect(
+                stakingContract
+                .connect(addr1)
+                .balanceOfStrp())
+                .not.to.be.reverted
+        })
+    })
+
+    describe('Testing balanceOfStry function', function() {
+        beforeEach(async function() {
+            [owner, addr1, addr2, addr3] = await ethers.getSigners();
+            let struCont = await ethers.getContractFactory('STRU');
+            struContract = await struCont.deploy();
+            let contract = await ethers.getContractFactory('Staking',[struContract.target, struContract.target]);
+            console.log(struContract.target);
+            stakingContract = await contract.deploy(struContract.target, struContract.target);
+        })
+
+        it('should test the if branch of setYeldAmount', async function() {
+
+            await expect(
+                stakingContract
+                .connect(addr1)
+                .balanceOfStry())
+                .not.to.be.reverted
+        })
+    })
+
+    describe('Testing getYeldForDuration function', function() {
+        beforeEach(async function() {
+            [owner, addr1, addr2, addr3] = await ethers.getSigners();
+            let struCont = await ethers.getContractFactory('STRU');
+            struContract = await struCont.deploy();
+            let contract = await ethers.getContractFactory('Staking',[struContract.target, struContract.target]);
+            console.log(struContract.target);
+            stakingContract = await contract.deploy(struContract.target, struContract.target);
+        })
+
+        it('should test the if branch of setYeldAmount', async function() {
+
+            await expect(
+                stakingContract
+                .connect(addr1)
+                .getYeldForDuration())
+                .not.to.be.reverted
+        })
+    })
 
 
 })
