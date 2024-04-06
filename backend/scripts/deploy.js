@@ -22,7 +22,7 @@ async function main() {
 
   const balanceStr = await stru.balanceOf(testAddr);
 
-  console.log(`Balance of  ${testAddr} is ${balanceStr.toString()}`”);
+  console.log(`Balance of  ${testAddr} is ${balanceStr.toString()}`);
   
   await stru.increaseAllow(testAddr, stAddr, 10000);
   await stru.increaseAllow(stAddr, testAddr, 10000);
