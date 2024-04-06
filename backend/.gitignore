@@ -11,6 +11,7 @@ node_modules
 
 # solidity-coverage files
 /coverage.json
+/coverage
 
 .vscode
 #Mac files

@@ -220,4 +220,7 @@ contract Staking is ReentrancyGuard, Ownable {
         yeldDuration = _yeldDuration;
         emit YeldDurationUpdated(yeldDuration);
     } 
+
+    /** @notice Recevie implementation for security reasons */
+	receive() external payable {}
 }
