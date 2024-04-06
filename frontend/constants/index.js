@@ -1,6 +1,6 @@
 // Dans ce fichier je viens récupérer les informations indispensables pour communiquer avec un contrat intelligent : l'adresse du contract et son abi.
-export const struTokenAddress="0xC1e0A9DB9eA830c52603798481045688c8AE99C2";
-export const stakingContractAddress="0x683d9CDD3239E0e01E8dC6315fA50AD92aB71D2d";
+export const struTokenAddress="0x0F527785e39B22911946feDf580d87a4E00465f0";
+export const stakingContractAddress="0x1D3EDBa836caB11C26A186873abf0fFeB8bbaE63";
 
 export const struTokenAbi=[
   {
@@ -224,10 +224,6 @@ export const struTokenAbi=[
     "type": "event"
   },
   {
-    "stateMutability": "payable",
-    "type": "fallback"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
@@ -376,6 +372,19 @@ export const struTokenAbi=[
   },
   {
     "inputs": [],
+    "name": "price",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "renounceOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -472,10 +481,6 @@ export const struTokenAbi=[
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
-  },
-  {
-    "stateMutability": "payable",
-    "type": "receive"
   }
 ]
 
@@ -692,7 +697,7 @@ export const stakingContractAbi=[
         "type": "uint256"
       }
     ],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -705,7 +710,7 @@ export const stakingContractAbi=[
         "type": "uint256"
       }
     ],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
