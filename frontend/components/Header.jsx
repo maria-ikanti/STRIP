@@ -15,7 +15,7 @@ const Header = () => {
         p="2rem"
         height="5rem" // Hauteur ajustée du header
         >
-        <Image src='logo.png' alt='Strip project' boxSize='120px' mb='2rem' mt='2rem'/>
+        <Image src='logo.png' alt='Strip project' boxSize='120px' mb='2rem' mt='4rem'/>
         <HeaderMenu/>
         <ConnectButton label="Please connect" />
       </Flex>

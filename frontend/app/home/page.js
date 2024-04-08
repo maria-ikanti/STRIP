@@ -4,7 +4,7 @@ import { useReadContract, useAccount } from 'wagmi';
 
 import Stake from "@/components/Stake";
 
-import { Heading} from "@chakra-ui/react";
+import {Flex, Box, Text} from "@chakra-ui/react";
 
 export default function home() {
 
@@ -15,9 +15,13 @@ export default function home() {
   
   return (
     <>
-      <Heading as='h2' size='xl' ml='20rem' mt='5rem' width="100%">
-          Welcome to our STRIP application !
-      </Heading>
+      <Flex>
+        <Box ml="2rem" mr="2rem" mt='10rem' bg='#ffffED' borderRadius={10} width='100%'>
+          <Text ml="1rem" mt="1rem" mr='1rem' mb='1rem' color="tomato">
+              Please connect !
+          </Text>
+        </Box>
+      </Flex>
     </>
 
   )

@@ -148,50 +148,43 @@ const Withdraw = () => {
     
   return (
     <>
-      <Heading as='h2' size='xl' ml='5rem' mt="3rem" mb="3rem">
-                    Withdraw your tokens
+      <Heading as='h2' ml='5rem' mt='10rem' mb="3rem">
+            Withdraw your tokens
       </Heading>
-      <Box ml="2rem">
-            {/* Est ce qu'on est en train de récupérer la balance en STRU ? */}
-            {balancePending ? (
-                <Spinner />
-            ) : (
-                <Text color='tomato'>Your current STRU balance is: {balanceGet?.toString()}</Text>
-            )}
-       </Box>
-       <Box ml="2rem">
-            {/* Est ce qu'on est en train de récupérer la balance du contrat en STRU ? */}
-            {contractBalancePending ? (
-                <Spinner />
-            ) : (
-                <Text color="orange">Your current staken STRU amount is: {contractBalanceGet?.toString()}</Text>
-            )}
-       </Box>
-
-       <Box ml="2rem">
-            {/* Est ce qu'on est en train de récupérer la balance du contrat en STRU ? */}
-            {strpBalancePending ? (
-                <Spinner />
-            ) : (
-                <Text color="yellow">Your current yearned STRP amount is: {strpBalanceGet?.toString()}</Text>
-            )}
-       </Box>
-
-       <Box ml="2rem">
-            {/* Est ce qu'on est en train de récupérer la balance du contrat en STRU ? */}
-            {stryBalancePending ? (
-                <Spinner />
-            ) : (
-                <Text color="white">Your current yearned STRY amount is: {stryBalanceGet?.toString()}</Text>
-            )}
+      <Flex>
+      <Box ml="2rem" bg='#ffffDD' borderRadius={10} width='50%'>
+        <Text ml="1rem" mt="2rem" mr='1rem' mb='2rem'>Hello ! Here you can withdraw all the STRU tokans you have staked. </Text>
+        {/* Est ce qu'on est en train de récupérer la balance en STRU ? */}
+        {balancePending ? (
+            <Spinner />
+        ) : (
+            <Text color='tomato' ml="1rem" mb='1rem' fontFamily='raleway'>Your current STRU balance is: {balanceGet?.toString()}</Text>
+        )}
+        {/* Est ce qu'on est en train de récupérer la balance du contrat en STRU ? */}
+        {contractBalancePending ? (
+            <Spinner />
+        ) : (
+            <Text color="#26516A" ml="1rem" fontFamily='raleway'>Your current staken STRU amount is: {contractBalanceGet?.toString()}</Text>
+        )}
+        {/* Est ce qu'on est en train de récupérer la balance du contrat en STRU ? */}
+        {strpBalancePending ? (
+            <Spinner />
+        ) : (
+            <Text color="#26516A" ml="1rem" fontFamily='raleway'>Your current yearned STRP amount is: {strpBalanceGet?.toString()}</Text>
+        )}
+        {/* Est ce qu'on est en train de récupérer la balance du contrat en STRU ? */}
+        {stryBalancePending ? (
+            <Spinner />
+        ) : (
+            <Text color="#26516A" ml="1rem" mb='1rem' fontFamily='raleway'>Your current yearned STRY amount is: {stryBalanceGet?.toString()}</Text>
+        )}
        </Box>
 
-        <Flex mt="2rem" mb="2rem">
-            <Input id='amnt' w='20rem' backgroundColor="#CBC49B" placeholder='Amount to withdraw' ml="1rem"  value={tokenAmount} onChange={(e) => setTokenAmount(e.target.value)} />
-            <Button w='15rem' leftIcon={<GiMoneyStack />} ml="1rem" mr="2rem" backgroundColor="#CBC49B" disabled={withdrawIsPending} onClick={withdrawSTRU}>Withdraw</Button>
-        </Flex>
-
-      
+       <Box ml="2rem" width='50%' bg='#ffffED' borderRadius={10} mr="2rem">
+            <Input id='amnt' w='40%' backgroundColor="#ffffDD" placeholder='Amount to withdraw' ml="1rem" mt="2rem" mb='2rem'  value={tokenAmount} onChange={(e) => setTokenAmount(e.target.value)} />
+            <Button w='30%' leftIcon={<GiMoneyStack />} ml="1rem" mr="1rem" backgroundColor="#CBC49B" disabled={withdrawIsPending} onClick={withdrawSTRU}>Withdraw</Button>
+       </Box>
+       </Flex>
     </>
   )
 }

@@ -6,7 +6,7 @@ import { Flex } from '@chakra-ui/react'
 
 const Layout = ({ children }) => {
   return (
-    <Flex bgGradient='linear(to-b, #26526A, #4A9DCC)'
+    <Flex bgGradient='linear(to-b, #26526A, #4A9DFF)'
       direction="column"
       minH="100vh"
       justifyContent="left"

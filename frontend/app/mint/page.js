@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 
 import Mint from "@/components/Mint";
 
-import { Heading} from "@chakra-ui/react";
+import { Flex, Text, Box} from "@chakra-ui/react";
 
 export default function mint() {
 
@@ -43,15 +43,23 @@ export default function mint() {
         </>
       ):
         (
-        <Heading as='h2' size='xl' ml='20rem' mt='5rem' width="100%">
-            You're not the owner and you cannot mint. {address}
-        </Heading>
+          <Flex>
+            <Box ml="2rem" mr="2rem" mt='10rem' bg='#ffffED' borderRadius={10} width='100%'>
+              <Text ml="1rem" mt="1rem" mr='1rem' mb='1rem'>
+                  The address {address} is not the owner and cannot mint STRU. 
+              </Text>
+            </Box>
+          </Flex>
         )
         ) : (
         <>
-        <Heading as='h2' size='xl' ml='20rem' mt='5rem' width="100%">
-            Please connect !
-        </Heading>
+          <Flex>
+            <Box ml="2rem" mr="2rem" mt='10rem' bg='#ffffED' borderRadius={10} width='100%'>
+              <Text ml="1rem" mt="1rem" mr='1rem' mb='1rem' color="tomato">
+                  Please connect !
+              </Text>
+            </Box>
+          </Flex>
         </>
       )}
     </>

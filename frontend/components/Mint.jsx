@@ -114,25 +114,19 @@ const Mint = () => {
     
   return (
     <>
-      <Heading as='h2' size='xl' ml='5rem' mt="3rem" mb="3rem">
+      <Heading as='h2' ml='5rem' mt='10rem' mb="3rem">
                     Mint STRU
       </Heading>
-      <Box p="2rem">
-            {/* Est ce qu'on est en train de récupérer la balance en STRU ? */}
-            {balancePending ? (
-                <Spinner />
-            ) : (
-                <Text>STRU balance of: {address} is {balanceGet?.toString()}</Text>
-            )}
-       </Box>
-
-        <Flex mt="2rem" mb="2rem">
-            <Input id='addr' mr="2rem" backgroundColor="#CBC49B" placeholder='Address to mint' ml="1rem" value={addressToMint} onChange={(e) => setAddressToMint(e.target.value)} />
-            <Input id='amnt' w='20rem' backgroundColor="#CBC49B" placeholder='Amount to mint' ml="1rem"  value={tokenAmount} onChange={(e) => setTokenAmount(e.target.value)} />
-            <Button w='15rem' leftIcon={<MdBuild />} ml="1rem" mr="2rem" backgroundColor="#CBC49B" disabled={mintIsPending} onClick={mintSTRU}>Mint</Button>
+      <Flex>
+        <Box ml="2rem" bg='#ffffED' borderRadius={10} width='50%'>
+            <Text ml="1rem" mt="1rem" mr='1rem'>Please enter the adress you want to mint STRU for.</Text>
+        </Box>
+        <Box ml="2rem" mr="2rem" bg='#ffffED' borderRadius={10} width='50%'>
+            <Input id='addr' w='95%' backgroundColor="#ffffDD" placeholder='Address to mint' mt='1rem' ml="1rem" mr="1rem" mb='2rem' value={addressToMint} onChange={(e) => setAddressToMint(e.target.value)} />
+            <Input id='amnt' w='40%' backgroundColor="#ffffDD" placeholder='Amount to mint' ml="1rem" mr="1rem" mb='2rem' value={tokenAmount} onChange={(e) => setTokenAmount(e.target.value)} />
+            <Button w='40%'  leftIcon={<MdBuild />} ml="1rem" mr="1rem" backgroundColor="#CBC49B" disabled={mintIsPending} onClick={mintSTRU}>Mint</Button>
+        </Box>
         </Flex>
-
-      
     </>
   )
 }

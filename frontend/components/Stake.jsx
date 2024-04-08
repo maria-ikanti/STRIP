@@ -170,11 +170,11 @@ const Stake = () => {
     <>  
 
       <Heading as='h2' ml='5rem' mt='10rem' mb="3rem">
-                    Stake & Strip
+            Stake & Strip
       </Heading>
 
     <Flex>
-      <Box ml="2rem" bg='#ffffED' borderRadius={10} width='50%'>
+      <Box ml="2rem" bg='#ffffDD' borderRadius={10} width='50%'>
         <Text ml="1rem" mt="1rem" mr='1rem'>Welcome to your STRIP application. </Text>
         <Text ml="1rem" mb="2rem" mr='1rem'>Stake your STRU and strip them to STRP and STRY tokens. </Text>
         {/* Est ce qu'on est en train de récupérer la balance en STRU ? */}
