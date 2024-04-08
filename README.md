@@ -8,8 +8,6 @@ Lien Déploiement Vercel: https://strip-sigma.vercel.app/stake
 
 ## Testnet
 Contrats déployés et vérifiés sur Sépolia aux adresses :
-STRU : 0x6b4824bE66d4e928D5DF3C08114A6ba2500B49Ce
-Staking : 0x460CBd5C8AEEc7d23de8a8663cC3108a8390cA05
 
 https://sepolia.etherscan.io/address/0x460CBd5C8AEEc7d23de8a8663cC3108a8390cA05
 https://sepolia.etherscan.io/address/0x6b4824bE66d4e928D5DF3C08114A6ba2500B49Ce
