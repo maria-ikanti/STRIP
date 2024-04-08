@@ -11,8 +11,8 @@ import {
 const HeaderMenu = () => {
   return (
     <> 
-       <Menu backgroundColor="#CBC49B">
-            <MenuButton as={Button} rightIcon={<ChevronDownIcon />} mr="3rem" width="15rem" backgroundColor="#CBC49B" alignSelf="end">
+       <Menu >
+            <MenuButton as={Button} rightIcon={<ChevronDownIcon />} width="15%" borderRadius={10} bg="#ffffED">
                     Menu
             </MenuButton>
             <MenuList>

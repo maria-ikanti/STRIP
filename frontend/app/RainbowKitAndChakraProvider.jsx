@@ -44,11 +44,12 @@ const RainbowKitAndChakraProvider = ({ children }) => {
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider theme={darkTheme({
-                                  accentColor: '#CBC49B',
+                                  accentColor: '#CBC496',
                                   accentColorForeground: 'black',
                                   borderRadius: 'small',
                                   fontStack: 'system',
                                   overlayBlur: 'small',
+                                  borderRadius: 'large',
                                 })}>
           <ChakraProvider>
             {children}

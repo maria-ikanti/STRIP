@@ -21,7 +21,7 @@ export default function stake() {
         </>
         ) : (
         <>
-          <Heading as='h2' size='xl' ml='20rem' mt='5rem' width="100%">
+          <Heading as='h2' ml='2rem' mt='10rem'>
               Please connect !
           </Heading>
         </>

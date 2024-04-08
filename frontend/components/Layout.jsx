@@ -9,14 +9,11 @@ const Layout = ({ children }) => {
     <Flex bgGradient='linear(to-b, #26526A, #4A9DCC)'
       direction="column"
       minH="100vh"
-      justifyContent="center"
+      justifyContent="left"
     >
         <Header />
-        <HeaderMenu/>
 
             {children}
-
-        <Footer />
     </Flex>
   )
 }
