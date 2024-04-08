@@ -2,7 +2,8 @@
 
 ## Pour correction :
 
-Lien vidéo: à définir
+Lien vidéo: https://www.loom.com/share/d4341c515d1f4986a152feab3a6ffa7f?sid=ccad0b9e-778b-4f91-a3e9-930a5bdbd40e
+
 
 Lien Déploiement Vercel: https://strip-sigma.vercel.app/stake
 
